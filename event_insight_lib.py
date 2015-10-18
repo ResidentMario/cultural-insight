@@ -4,6 +4,7 @@
 import json
 import os
 import requests
+import pprint
 
 '''Finds the credentials file describing the token that's needed to access Watson/Bluemix services.
 Returns a {url, username, password} token if successful, fataly aborts if not.
@@ -23,7 +24,7 @@ This method will need to be called as the first step of the execution of any scr
 Note that tokens expire after an hour of use (or non-use).'''
 def generateToken(filename='credentials.json'):
 	credentials = importCredentials(filename)
-	r = requests.get("https://gateway.watsonplatform.net/authorization/api/v1/token\?url=https://stream.watsonplatform.net/concept-insights/api", auth=(credentials['username'], credentials['password']))
+	r = requests.get("https://gateway.watsonplatform.net/authorization/api/v2/token\?url=https://stream.watsonplatform.net/concept-insights/api", auth=(credentials['username'], credentials['password']))
 	if r.status_code == requests.codes.ok:
 		return r.text
 	else:
@@ -34,12 +35,12 @@ This method forms the core of this library's functionality.
 This method accepts one optional parameter: `content_type`. This defaults to `text/plain`, which expects plaintext input. `text/html` is the alternative option.'''
 def annotateText(text, token, content_type = 'text/plain'):
 	base_url='https://watson-api-explorer.mybluemix.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/annotate_text'
-	headers = {'X-Watson-Authorization-Token': token, 'Content-Type': content_type}
-	r = requests.post(base_url, headers=headers, data={'body': text})
-	return r.text
+	headers = {'X-Watson-Authorization-Token': token, 'Content-Type': content_type, 'Accept': 'application/json'}
+	r = requests.post(base_url, headers=headers, data=text.encode(encoding='UTF-8', errors='ignore'))
+	return json.loads(r.text)
 
 '''Helper function for saving a file.'''
 def saveFile(content, filename):
 	f = open(filename, 'w')
-	f.write(content)
+	f.write(json.dumps(content, indent=4))
 	f.close()
