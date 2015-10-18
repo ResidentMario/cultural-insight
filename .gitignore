@@ -11,7 +11,7 @@ __pycache__/
 # C extensions
 *.so
 
-# JSON files: in particular, the private credentials file storing our Bluemix/Watson acceess token.
+# JSON files, including the private credentials file storing our Bluemix/Watson acceess token and the sample outputs you can generate.
 # DO NOT REMOVE THIS!
 *.json
 
