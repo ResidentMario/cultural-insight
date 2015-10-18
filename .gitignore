@@ -1,5 +1,8 @@
 # .gitignore template originally imported from https://github.com/github/gitignore/blob/master/Python.gitignore
 
+# Junk file that keeps coming up.
+.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
