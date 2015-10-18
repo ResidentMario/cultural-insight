@@ -1,4 +1,4 @@
-#Sample Bluemix Python Web application
+#Py-Events
 
 ##Structure of application
 **Procfile** - Contains the command to run when you application starts on Bluemix. It is represented in the form `web: <command>` where `<command>` in this sample case is to run the `py` command and passing in the the `welcome.py` script.
@@ -9,7 +9,7 @@
 
 **README.md** - this readme.
 
-**welcome.py** - the python application script. This is implemented as a simple [Flask](http://flask.pocoo.org/) application. The routes are defined in the application using the @app.route() calls. This application has a / route and a /myapp route defined. The application deployed to Bluemix needs to listen to the port defined by the VCAP_APP_PORT environment variable as seen here:
+**app.py** - the python application script. This is implemented as a simple [Flask](http://flask.pocoo.org/) application. The routes are defined in the application using the @app.route() calls. This application has a / route and a /myapp route defined. The application deployed to Bluemix needs to listen to the port defined by the VCAP_APP_PORT environment variable as seen here:
 ```python
 port = os.getenv('VCAP_APP_PORT', '5000')
 if __name__ == "__main__":
@@ -17,3 +17,6 @@ if __name__ == "__main__":
 ```
 
 This is the port given to your application so that http requests can be routed to it. If the property is not defined then it falls back to port 5000 allowing you to run this sample appliction locally.
+
+##Notes
+Urgently needs investigating: https://developer.ibm.com/answers/questions/233701/why-is-there-such-a-large-difference-between-simul.html
