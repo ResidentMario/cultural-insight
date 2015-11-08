@@ -1,0 +1,64 @@
+{% extends "frame.html" %}
+{% block pagetitle %} Getting Started—Cultural Insight {% endblock %}
+{% block content %}
+    <div id="error-message">{{ error }}</div>
+
+    <form method="POST" action="/start.html">
+      <div style="text-align:left;">
+        <h2>Getting Started</h2>
+        <img src="/static/images/watson-logo.png" style="height:200px; float:right;"/>
+        To get started using the Cultural Insight service you must first register for an account by filling out the form below. We need:
+        <ul>
+          <li>Your email address. This will be where we send our weekly notifications. You will also need to provide it whenever you log back in again.</li>
+          <li>Your password. You will need this whenever you log back in again.</li> 
+          <li>At least three and at most ten cultural institutions located in the city of New York which interest you. We use this information to begin to build an understanding of your interests, so that we can better match you up with cultural events you would be likely to attend. The more information you can provide us, the more useful you will find the service to be!</li>
+        </ul>
+      </div>
+      <table style="width:500px; margin:auto">
+        <tr>
+          <td id="form-req-input" style="text-align:right; font-weight:bold">Email</td>
+          <td>{{ form.email }}</td>
+        </tr>
+        <tr>
+          <td id="form-req-input">Password</td>
+          <td>{{ form.password }}</td>
+        </tr>
+        <tr>
+          <td id="form-req-input">Institution 1</td>
+          <td>{{ form.i1 }}</td>
+        </tr>
+          <td id="form-req-input">Institution 2</td>
+         <td>{{ form.i2 }}</td>
+        </tr>
+          <td id="form-req-input">Institution 3</td>
+          <td>{{ form.i3 }}</td>
+        </tr>
+          <td id="form-cultural-input">Institution 4</td>
+          <td>{{ form.i4 }}</td>
+        </tr>
+          <td id="form-cultural-input">Institution 5</td>
+          <td>{{ form.i5 }}</td>
+        </tr>
+          <td id="form-cultural-input">Institution 6</td>
+          <td>{{ form.i6 }}</td>
+        </tr>
+          <td id="form-cultural-input">Institution 7</td>
+          <td>{{ form.i7 }}</td>
+        </tr>
+          <td id="form-cultural-input">Institution 8</td>
+          <td>{{ form.i8 }}</td>
+        </tr>
+          <td id="form-cultural-input">Institution 9</td>
+          <td>{{ form.i9 }}</td>
+        </tr>
+          <td id="form-cultural-input">Institution 10</td>
+          <td>{{ form.i10 }}</td>
+        <tr>
+          <td colspan=2>
+            <input id="submit-button" type="submit" value="Register"/>
+          </td>
+        </tr>
+      </table>
+    </form>
+</body>
+{% endblock %}

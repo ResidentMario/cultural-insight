@@ -1,0 +1,29 @@
+{% extends "frame.html" %}
+{% block pagetitle %} Welcome—Cultural Insight {% endblock %}
+{% block content %}
+
+<div style="text-align:left;">
+  <img src="/static/images/cultural-insight.svg" style="height:200px; float:right; margin-left:25px; margin-bottom:25px;"/>
+  <h2>Cultural Insight</h2>
+
+  <p>How can one make sense of the many leading cultural institutions that call the city of New York home? No one single institution has the ability to reach out to everyone simultaneously, making it fundamentally difficult for us, as residents, to find those opportunities which most want to attend.</p>
+  
+  <p>Enter the Cultural Insight tool, powered by IBM Watson. You provide us with a list of institutions that interest you; we figure out what you like and send you a personalized list, emailed weekly, of the things which you absolutely must know about.</p>
+
+  <table style="width:100%; text-align:center">
+    <tr>
+      <td style="width:45%">
+        <div id="link-button">
+          <a href="/start.html">Register</a>
+        </div>
+      </td>
+      <td style="width:45%">
+        <div id="link-button">
+          <a href="/login.html">Log In</a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{% endblock %}

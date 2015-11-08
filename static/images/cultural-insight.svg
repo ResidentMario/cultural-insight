@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="282.22223mm"
+   height="282.22223mm"
+   viewBox="0 0 1000 1000"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="cultural-insight.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.24748737"
+     inkscape:cx="-504.61388"
+     inkscape:cy="352.03415"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="670"
+     inkscape:window-x="0"
+     inkscape:window-y="1"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-544.28572,109.06637)">
+    <g
+       id="g3539">
+      <g
+         style="fill:#87deaa"
+         transform="translate(340.28572,30.933628)"
+         id="g3400">
+        <circle
+           style="fill:#87deaa"
+           class="st0"
+           cx="704"
+           cy="360"
+           r="500"
+           id="circle3372" />
+      </g>
+      <g
+         transform="translate(-3.2941285,0)"
+         id="g3528">
+        <path
+           style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:32;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="M 750,387.71935 1041.4286,93.790776 1337.8571,387.71935 1054.3731,542.0939 Z"
+           id="path3526"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="ccccc" />
+        <g
+           transform="translate(336.91429,102.44078)"
+           id="Icon_14_">
+          <ellipse
+             id="ellipse3379"
+             ry="104.1"
+             rx="106.1"
+             cy="421.39999"
+             cx="708.59998"
+             class="st3"
+             style="fill:#264a60" />
+          <path
+             id="path3381"
+             d="m 799.8,556 -182.5,0 c -24.6,0 -45.3,20.7 -45.3,44.7 l 0,44.7 273.6,0 0,-44.7 c 0,-24 -21.2,-44.7 -45.8,-44.7 z"
+             class="st3"
+             inkscape:connector-curvature="0"
+             style="fill:#264a60" />
+          <ellipse
+             id="ellipse3383"
+             ry="104.1"
+             rx="106.1"
+             cy="421.39999"
+             cx="708.59998"
+             class="st3"
+             style="fill:#264a60" />
+          <path
+             id="path3385"
+             d="m 799.8,556 -182.5,0 c -24.6,0 -45.3,20.7 -45.3,44.7 l 0,44.7 273.6,0 0,-44.7 c 0,-24 -21.2,-44.7 -45.8,-44.7 z"
+             class="st3"
+             inkscape:connector-curvature="0"
+             style="fill:#264a60" />
+        </g>
+        <circle
+           style="fill:#217844"
+           class="st2"
+           cx="1035.1801"
+           cy="-176.98529"
+           r="101.3"
+           id="circle3432"
+           transform="matrix(0.96592583,0.25881905,-0.25881905,0.96592583,0,0)" />
+        <circle
+           transform="matrix(0.96592583,0.25881905,-0.25881905,0.96592583,0,0)"
+           id="circle3522"
+           r="101.3"
+           cy="22.393301"
+           cx="1402.1792"
+           class="st2"
+           style="fill:#217844" />
+        <circle
+           style="fill:#217844"
+           class="st2"
+           cx="820.6427"
+           cy="178.21555"
+           r="101.3"
+           id="circle3524"
+           transform="matrix(0.96592583,0.25881905,-0.25881905,0.96592583,0,0)" />
+      </g>
+    </g>
+  </g>
+  <style
+     id="style3337">.st0{fill:#5596E6;} .st1{fill:#325C80;} .st2{fill:#FFFFFF;} .st3{fill:#264A60;}</style>
+  <style
+     id="style3370">.st0{fill:#5596E6;} .st1{fill:#325C80;} .st2{fill:#FFFFFF;} .st3{fill:#264A60;}</style>
+</svg>
