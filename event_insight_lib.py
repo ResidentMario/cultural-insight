@@ -46,9 +46,3 @@ def annotateText(text, token, content_type = 'text/plain'):
 	r = requests.post(base_url, headers=headers, data=dat)
 	print(r.text)
 	return json.loads(r.text)
-
-'''Helper function for saving a file.'''
-def saveFile(content, filename):
-	f = open(filename, 'w')
-	f.write(json.dumps(content, indent=4))
-	f.close()
