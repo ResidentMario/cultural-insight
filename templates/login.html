@@ -1,6 +1,27 @@
 {% extends "frame.html" %}
 {% block pagetitle %} Log In—Cultural Insight {% endblock %}
 {% block content %}
-<h2>Log In</h2>
-<p>Unfortunately logins have not been implemented yet.</p>
+
+    <div id="error-message">{{ error }}</div>
+
+    	<h2>Log In</h2>
+
+    <form method="POST" action="/login.html">
+      <table style="width:500px; margin:auto">
+        <tr>
+          <td id="form-req-input" style="text-align:right; font-weight:bold">Email</td>
+          <td>{{ form.email }}</td>
+        </tr>
+        <tr>
+          <td id="form-req-input">Password</td>
+          <td>{{ form.password }}</td>
+        </tr>
+          <td colspan=2>
+            <input id="submit-button" type="submit" value="Log In"/>
+          </td>
+        </tr>
+      </table>
+    </form>
+
+
 {% endblock %}

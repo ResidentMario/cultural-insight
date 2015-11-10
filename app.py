@@ -12,12 +12,64 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import redirect
+from flask import url_for
+from flask import flash
 
 # My own libraries.
 import forms
 import backend
 
 app = Flask(__name__)
+
+########
+# CSRF #
+########
+# TODO: CSRF is code injection attack protection. I need to work out how to implement this for the production verison.
+# For now it's just disabled on all forms: see the csrf_enabled=false arguments throughout.
+# from flask_wtf.csrf import CsrfProtect
+# CsrfProtect(app)
+
+################
+# FLASK-LOGIN  #
+# ##############
+
+import flask.ext.login as flask_login
+
+# The secret key is used by both flask-login and flask-flash
+app.secret_key = str(backend.initializeSecretString())
+
+# Initialize the login manager.
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+
+class User(flask_login.UserMixin):
+    pass
+
+@login_manager.user_loader
+def user_loader(email):
+    if not backend.emailAlreadyInUse(email):
+        return
+    else:
+   		user = User()
+		user.id = email
+		return user
+
+@login_manager.request_loader
+def request_loader(request):
+    email = request.form.get('email')
+    password = request.form.get('password')
+    if not backend.authenticateUser(email, password):
+        return
+    else:
+   		user = User()
+		user.id = email
+		# user.is_authenticated = request.form['password'] == request.form['password']
+		return user
+
+###################
+# END FLASK-LOGIN #
+###################
+
 
 # SPLASH: The homepage is a static page consisting of a short description of what this project is all about and two bottons,
 # one pointing to logins and one point to signups.
@@ -46,13 +98,45 @@ def start():
 				backend.addNewUser(request.form['email'], request.form['password'], [request.form['i1'], request.form['i2'],
 				 request.form['i3'], request.form['i4'], request.form['i5'], request.form['i6'], request.form['i7'], request.form['i8'],
 				 request.form['i9'], request.form['i10']])
+				flash('Your account was successfully registered.')
 				return render_template('registered.html')
 		else:
 			return render_template('start.html', form=form, error='Error: You must input all of the required fields.')
 
-@app.route('/login.html')
+@app.route('/login.html', methods=['GET', 'POST'])
 def login():
-	return render_template('login.html')
+	form = forms.LoginForm(csrf_enabled=False)
+	if request.method == 'GET':
+		return render_template('login.html', form=form)
+	else:
+		if backend.authenticateUser(request.form['email'], request.form['password']):
+			user = User()
+			email = request.form['email']
+			user.id = email
+			flask_login.login_user(user)
+			flash('You were successfully logged in.')
+			return redirect('/')
+		else:
+			return render_template('login.html', form=form, error='Error: Incorrect username or password.')
+
+@app.route('/logout.html')
+def logout():
+    flask_login.logout_user()
+    flash('You were successfully logged out.')
+    return redirect('/')
+
+@app.route('/dashboard.html', methods=['GET', 'POST'])
+def dashboard():
+	form = forms.DashboardForm(csrf_enabled=False)
+	if request.method == 'GET':
+		return render_template('dashboard.html', form=form)
+	if request.method == 'POST':
+		if request.form['email']:
+			backend.changeEmail(flask_login.current_user.get_id(), request.form['email'])
+		if request.form['password']:
+			pass
+		flash('Your changes have been applied. You may now log back in again.')
+		return render_template('dashboard.html', form=form)
 
 ###################################
 # RUNTIME CODE
@@ -62,4 +146,4 @@ def login():
 ###################################
 port = os.getenv('VCAP_APP_PORT', '5000')
 if __name__ == "__main__":
-	app.run(host='0.0.0.0', port=int(port))
+	app.run(host='0.0.0.0', port=int(port), debug=True)

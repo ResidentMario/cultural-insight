@@ -1,7 +1,21 @@
-input {
+#navbar {
 	font-size:14px;
-	padding:4px 6px 4px 6px;
-	box-shadow: 1px 1px 1px #ddd;
+	font-family: Helvetica Neue;
+	text-align:right;
+	padding-right:100px;
+	width:800px;
+	margin:auto;
+	background:#87deaa;
+	border:1px solid #003300;
+	border-radius:6px 6px 0px 1px;
+	padding:5px;
+}
+#navbar-link {
+	font-weight: bold;
+}
+#flash {
+	font-weight: bold;
+	color:blue;
 }
 #form-frame {
 	font-size:14px;
@@ -29,6 +43,23 @@ input {
 	text-align:right;
 	font-size:16px;
 }
+#form-dashboard-options {
+	font-style:italic;
+	font-weight:normal;
+	text-align:left;
+	font-size:16px;
+}
+#dashboard-delete-button {
+	font-size:18px;
+	font-weight:bold;
+	color:#660000;
+	text-align: center;
+	padding:5px;
+	border:1px solid #800000;
+	box-shadow: 1px 1px #4D0000;
+	background:#FF8080;
+	width:71%;
+}
 #submit-button {
 	font-size:16px;
 }
@@ -41,9 +72,22 @@ input {
 	border:1px solid #217844;
 	box-shadow: 1px 1px green;
 }
+#version-number {
+	font-size:12px;
+	font:Helvetica Neue;
+	width:800px;
+	margin:auto;
+	font-style:italic;
+}
+input {
+	font-size:14px;
+	padding:4px 6px 4px 6px;
+	box-shadow: 1px 1px 1px #ddd;
+}
 a {
 	color:inherit;
 	text-decoration: inherit;
+	font-weight:bold;
 }
 a:hover {
 	color:#264a60;

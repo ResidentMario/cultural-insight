@@ -15,3 +15,11 @@ class StartForm(Form):
     i8 = TextField('i8')
     i9 = TextField('i9')
     i10 = TextField('i10')
+
+class LoginForm(Form):
+    email = TextField('Email', validators=[Required(), Email()])
+    password = PasswordField('Password', validators=[Required()])
+
+class DashboardForm(Form):
+    email = TextField('Email', validators=[Required(), Email()])
+    password = PasswordField('Password', validators=[Required()])

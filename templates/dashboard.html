@@ -1,0 +1,65 @@
+{% extends "frame.html" %}
+{% block pagetitle %} Account Dashboard—Cultural Insight {% endblock %}
+{% block content %}
+
+	
+<div style="text-align:left;">
+  <h2>Account Dashboard</h2>
+
+  <img src="/static/images/cultural-insight.svg" style="height:200px; float:right; margin-left:25px;"/>
+
+  {% if current_user.is_authenticated %}
+
+
+  <p>Welcome to the account dashboard. Here you can change your email, change your password, or delete your account entirely.</p>
+
+  <p>You can also view the concepts which Cultural Insights has associated with your account thus far.</p>
+ 
+  <h3>Account</h3>
+    <form method="POST" action="/dashboard.html">
+      <table style="width:500px">
+        <tr>
+          <td id="form-dashboard-options">Update Email</td>
+          <td>{{ form.email }}</td>
+          <td><input id="submit-button" type="submit" value="Update"/></td>
+        </tr>
+        <tr>
+          <td id="form-dashboard-options">Update Password</td>
+          <td>{{ form.password }}</td>
+          <td><input id="submit-button" type="submit" value="Update"/></td>
+        </tr>
+        <tr>
+          <td id="form-dashboard-options" style="color:red">Delete Account</td>
+          <td><div id="dashboard-delete-button">Delete</div></td>
+        </tr>
+      </table>
+    </form>
+
+  <h3>Concepts</h3>
+  <p>As of now, the following concepts are associated with your account:</p>
+
+
+  <table style="width:100%; text-align:center">
+    <tr>
+      <td style="width:45%">
+        <div id="link-button">
+          <a href="/">Return Home</a>
+        </div>
+      </td>
+      <td style="width:45%">
+        <div id="link-button">
+          <a href="/logout.html">Log Out</a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+  {% else %}
+
+  You're browsing anonymously! You must <a href="/login.html">log in</a> before you can access your dashboard tools.
+    
+  {% endif %}
+
+{% endblock %}
+logout.html

@@ -10,6 +10,26 @@
   
   <p>Enter the Cultural Insight tool, powered by IBM Watson. You provide us with a list of institutions that interest you; we figure out what you like and send you a personalized list, emailed weekly, of the things which you absolutely must know about.</p>
 
+  {% if current_user.is_authenticated %}
+
+  <table style="width:100%; text-align:center">
+    <tr>
+      <td style="width:45%">
+        <div id="link-button">
+          <a href="/dashboard.html">Dashboard</a>
+        </div>
+      </td>
+      <td style="width:45%">
+        <div id="link-button">
+          <a href="/logout.html">Log Out</a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+  {% else %}
+
   <table style="width:100%; text-align:center">
     <tr>
       <td style="width:45%">
@@ -25,5 +45,7 @@
     </tr>
   </table>
 </div>
+    
+  {% endif %}
 
 {% endblock %}

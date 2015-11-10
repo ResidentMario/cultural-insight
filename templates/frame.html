@@ -5,7 +5,21 @@
 </head>
 
 <body>
+	<div id="version-number">Cultural Insight 0.1.5 Alpha</div>
+  {% if current_user.is_authenticated %}
+	<div id="navbar">
+		{{ current_user.get_id() }}&nbsp;•&nbsp;<a id="navbar-link" href="/dashboard.html">Dashboard</a>&nbsp;•&nbsp;<a id="navbar-link" href="/logout.html">Log Out</a>
+	</div>
+  {% else %}
+  	
+  {% endif %}
   <div id="form-frame">
+	{% if get_flashed_messages() %}
+	    {% for message in get_flashed_messages() %}
+			<div id="flash">{{ get_flashed_messages()[0] }}</div>
+	    {% endfor %}
+	{% endif %}
+
     {% block content %}
     {% endblock %}
   </div>
