@@ -47,21 +47,21 @@ class User(flask_login.UserMixin):
 
 @login_manager.user_loader
 def user_loader(email):
-    if not backend.emailAlreadyInUse(email):
-        return
-    else:
-   		user = User()
+	if not backend.emailAlreadyInUse(email):
+		return
+	else:
+		user = User()
 		user.id = email
 		return user
 
 @login_manager.request_loader
 def request_loader(request):
-    email = request.form.get('email')
-    password = request.form.get('password')
-    if not backend.authenticateUser(email, password):
-        return
-    else:
-   		user = User()
+	email = request.form.get('email')
+	password = request.form.get('password')
+	if not backend.authenticateUser(email, password):
+		return
+	else:
+		user = User()
 		user.id = email
 		# user.is_authenticated = request.form['password'] == request.form['password']
 		return user
