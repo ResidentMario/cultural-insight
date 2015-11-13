@@ -8,6 +8,45 @@ import json
 import os
 import random
 
+############
+# SENDGRID #
+############
+# SendGrid is IBM Watson's technology solution partner for email services.
+# The methods that follow are based on the SendGrid Pythonic API (https://github.com/sendgrid/sendgrid-python).
+
+import sendgrid
+
+# SendGrid secret key.
+api_key = None
+
+'''Loads the SendGrid secret key from its JSON storage file. Called by the `sendEmail()` meta-method.'''
+def fetchSendGridKey(filename='sendgrid_key.json'):
+	return json.load(open(filename))['api_key']
+
+'''Generic email template, implemented using the SendGrid emailer service. Extended by application-specific methods.'''
+def sendEmail(_to, _from, subject, content):
+	# Fetch the SendGrid key from the hidden JSON keyfile, if it has not been defined already.
+	if api_key == None:
+		api_key = fetchSendGridKey()
+	sg = sendgrid.SendGridClient(api_key)
+	message = sendgrid.Mail()
+	message.add_to(_to)
+	message.set_from(_from)
+	message.set_subject(subject)
+	message.set_html(content)
+	chk = sg.send(message)
+	# The SendGrid send method returns a tuple (http_status_code, message) that I return here for debugging purposes.
+	return chk
+
+################
+# END SENDGRID #
+################
+
+#############
+# INTERFACE #
+#############
+# This section contains all of the backend methods servicing the user interface layer of the webservice.
+
 '''Checks if an email is already in use. Returns True if it is, False if not.'''
 def emailAlreadyInUse(new_email, filename='accounts.json'):
 	# Open the accounts file.
@@ -64,14 +103,22 @@ def changeEmail(current_email, new_email, filename='accounts.json'):
 
 '''Changes the password associated with an account. Must be requested by the user via the dashboard.
 	TODO: Implement.'''
-def changePassword():
+def changePassword(current_email, new_password, filename='accounts.json'):
 	pass
 
 '''Imports the secret string used by some of the Flask plug-ins for security purposes.
-	The secret string should be a simple randomly generated numerical.
-	TODO: Implement.'''
+	The secret string is be a simple randomly generated numerical, defined at runtime.'''
 def initializeSecretString():
 	return random.random()
+
+#################
+# END INTERFACE #
+#################
+
+###############
+# WATSON/CORE #
+###############
+# This section contains the systemic core of the application---its interface with the IBM Watson Concept Insights service.
 
 '''A statistically analytical method which atomizes a given list of objects and turns them into a ranked list of concepts.
 	Concepts are arranged {'Concept': <NAME>, 'Score': <SCORE> }, where SCORE is the mean confidence returned by Concept Insight when
@@ -111,3 +158,7 @@ def saveFile(content, filename):
 	f = open(filename, 'w')
 	f.write(json.dumps(content, indent=4))
 	f.close()
+
+###################
+# END WATSON/CORE #
+###################

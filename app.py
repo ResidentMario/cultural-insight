@@ -70,6 +70,25 @@ def request_loader(request):
 # END FLASK-LOGIN #
 ###################
 
+# ##############
+# # FLASK-MAIL #
+# ##############
+
+# from flask_mail import Mail, Message
+# mail = Mail(app)
+
+# @app.route('/emailtest')
+# def test():
+# 	# msg = Message("Hello", sender='cultural-insight' + str(request.url_root), recipients=["aleksey.bilogur@gmail.com"])
+# 	root = str(request.url_root)
+# 	msg = Message("Hello", sender='cultural-insight@cultural-insight.mybluemix.net', recipients=["aleksey.bilogur@gmail.com"])
+# 	msg.body = "testing"
+# 	mail.send(msg)
+# 	return str(msg)
+
+# ##################
+# # END FLASK-MAIL #
+# ##################
 
 # SPLASH: The homepage is a static page consisting of a short description of what this project is all about and two bottons,
 # one pointing to logins and one point to signups.
@@ -134,9 +153,18 @@ def dashboard():
 		if request.form['email']:
 			backend.changeEmail(flask_login.current_user.get_id(), request.form['email'])
 		if request.form['password']:
-			pass
+			backend.changePassword(flask_login.current_user.get_id(), request.form['password'])
 		flash('Your changes have been applied. You may now log back in again.')
 		return render_template('dashboard.html', form=form)
+
+##############
+# TEST PATHS #
+##############
+
+@app.route('/email.html')
+def test():
+	return backend.fetchSendGridKey()
+	# return str(backend.sendEmail('aleksey.bilogur@gmail.com', 'concept-insight@0.0.0.0:5000', 'Hello!', 'Test'))
 
 ###################################
 # RUNTIME CODE
@@ -146,4 +174,5 @@ def dashboard():
 ###################################
 port = os.getenv('VCAP_APP_PORT', '5000')
 if __name__ == "__main__":
+	#app.run(host='0.0.0.0', port=int(port), debug=True)
 	app.run(host='0.0.0.0', port=int(port))
