@@ -1,17 +1,19 @@
 '''backend.py
-    This library implements the data interface methods used by the app.py webservice. It is meant to serve as a library for use thereof.
-    This means that only methods related to using the website go here: the email service is defined seperately, in email_service.py.
-    Unit testing for this library is present at test.py.
-    TODO: Figure out that organization.'''
+	This library defines the backend used by the application webservice, `app.py`.
+	The Watson/Core methods contained here are wrappers of `event_insight_lib.py` methods.''' 
 
+# Redistributables.
 import json
 import os
 import random
 
-############
-# SENDGRID #
-############
-# SendGrid is IBM Watson's technology solution partner for email services.
+# My own libraries.
+import event_insight_lib
+
+##################
+# SENDGRID/EMAIL #
+##################
+# SendGrid is IBM's technology solution partner for email services.
 # The methods that follow are based on the SendGrid Pythonic API (https://github.com/sendgrid/sendgrid-python).
 
 import sendgrid
@@ -19,9 +21,19 @@ import sendgrid
 # SendGrid secret key.
 api_key = None
 
-'''Loads the SendGrid secret key from its JSON storage file. Called by the `sendEmail()` meta-method.'''
+'''Loads the SendGrid secret key from its JSON storage file. Called by `generateEmail()`, and by sendEmail() from there.'''
 def fetchSendGridKey(filename='sendgrid_key.json'):
 	return json.load(open(filename))['api_key']
+
+'''Generates a sendgrid.Mail() object containing the given subject and content.
+	Returns the object.'''
+def generateEmail(subject, content):
+	message = sendgrid.Mail()
+	message.set_subject(subject)
+	message.set_html(content)
+	# Note: to get only the subject use .subject, to get only the body use ??? .content is a dict, need to do a bit of plumbing.
+	# The SendGrid API doesn't have any getter methods?
+	return message
 
 '''Generic email template, implemented using the SendGrid emailer service. Extended by application-specific methods.'''
 def sendEmail(_to, _from, subject, content):
@@ -29,23 +41,30 @@ def sendEmail(_to, _from, subject, content):
 	if api_key == None:
 		api_key = fetchSendGridKey()
 	sg = sendgrid.SendGridClient(api_key)
-	message = sendgrid.Mail()
+	message = generateEmail(subject, content)
 	message.add_to(_to)
 	message.set_from(_from)
-	message.set_subject(subject)
-	message.set_html(content)
 	chk = sg.send(message)
 	# The SendGrid send method returns a tuple (http_status_code, message) that I return here for debugging purposes.
 	return chk
 
-################
-# END SENDGRID #
-################
+'''Returns a user email iterator. Used by the email script.
+	Should I be using an iterator? It's not neccessary, probably, but I need to use a little bit of flair, for practice. :)
+	NOTE: Untested.'''
+def iterEmails(filename='accounts.json'):
+	if filename in [f for f in os.listdir('.') if os.path.isfile(f)]:
+		user_data = json.load(open(filename))
+	yield user_data['email']
+
+######################
+# END SENDGRID/EMAIL #
+######################
 
 #############
 # INTERFACE #
 #############
 # This section contains all of the backend methods servicing the user interface layer of the webservice.
+# TODO: Rewrite from an OOP perspective using a User abstraction.
 
 '''Checks if an email is already in use. Returns True if it is, False if not.'''
 def emailAlreadyInUse(new_email, filename='accounts.json'):
@@ -65,8 +84,10 @@ def addNewUser(new_user_email, new_user_password, new_user_institutions_list, fi
 	# Open the JSON file.
 	if filename in [f for f in os.listdir('.') if os.path.isfile(f)]:
 		user_data = json.load(open(filename))
+	# Initialize the concept model.
+	concept_model = {'maturity': 1, 'concepts': conceptualize(new_user_institutions_list)}
 	# Append the new user.
-	user_data['accounts'].append({'email': new_user_email, 'password': new_user_password, 'concepts': conceptualize(new_user_institutions_list)})
+	user_data['accounts'].append({'email': new_user_email, 'password': new_user_password, 'model': concept_model})
 	# Re-encode and save the modified file.
 	with open(filename, 'w') as outfile:
 		json.dump(user_data, outfile)
@@ -119,21 +140,35 @@ def initializeSecretString():
 # WATSON/CORE #
 ###############
 # This section contains the systemic core of the application---its interface with the IBM Watson Concept Insights service.
+# These are high-level methods which wrap low-level methods contained in the event_insight_lib library.
+# Some terminology:
+# A "Concept" is a Wikipedia pagename which is associated with an "Object" when run through the Concept Insights service.
+# An "Object" is a text (or title) which has concepts associated with itself.
+# A "Concept model" is a list of concepts and their confidences associated with a particular account.
+# eg. [['Modern art', 0.67], ['History of music', 0.89]]
+# Ultimately everything is stored in terms of concept models.
+# After some deliberation I thought it would be best to just implement these methods functionally, since none of the rest is OOP.
+
+'''The ConceptGraph object handles all of the concept graph abstraction.'''
+class ConceptGraph:
+	graph = []
+
+	def get():
+		return graph
+
+	def __init__(self):
+		self.graph = []
 
 '''A statistically analytical method which atomizes a given list of objects and turns them into a ranked list of concepts.
-	Concepts are arranged {'Concept': <NAME>, 'Score': <SCORE> }, where SCORE is the mean confidence returned by Concept Insight when
-	called along the series.
 	Pass-method for now, still to be implemented.
-	Inputs a list of concepts, outputs a dictionary of concepts (as above).
 	Called by addNewUser(). Implements addObjectToConceptModel().
 	TODO: Implement!'''
 def conceptualize(list_of_things):
 	return list_of_things
 
-'''A statistically analytical method which atomizes a given concept and fuses it into an existing (possibly empty) ranked list of concepts.
-	This method is an internal submethod of conceptualize, which basically just calls this method multiple times (or once).
-	TODO: Implement!'''
-def addObjectToConceptModel(object, concept_model):
+'''This method merges two concept models using a running average.'''
+def addObjectToConceptModel(base_concept_model, merger_concept_model):
+	# event_insight_lib.annotateText(concept_object)
 	pass
 
 '''Compares two concept models and returns a standardized measure of overlap. Open question: two-iter, or one-iter?
@@ -144,14 +179,6 @@ def addObjectToConceptModel(object, concept_model):
 	TODO: Implement!'''
 def compareConceptModels():
 	pass
-
-'''Returns a user email iterator. Used by the email script.
-	Should I be using an iterator? It's not neccessary, probably, but I need to use a little bit of flair, for practice. :)
-	NOTE: Untested.'''
-def iterEmails(filename='accounts.json'):
-	if filename in [f for f in os.listdir('.') if os.path.isfile(f)]:
-		user_data = json.load(open(filename))
-	yield user_data['email']
 
 '''Helper function for saving a file. Not currently used.'''
 def saveFile(content, filename):

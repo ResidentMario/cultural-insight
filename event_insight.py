@@ -1,28 +1,16 @@
 '''event-insight.py
-    Proof of concept script for the event insight tool. Console-based wrapper for event-insight-lib.py'''
+    Test script for event_insight_lib.py'''
 
-import argparse
+# import argparse
 import event_insight_lib
-import os
-import json
-import pprint
+import backend
+# import os
+# import json
+# import pprint
 
 def main():
-	# In general you can generate a token every time you run this script with this method.
-	# token = event_insight_lib.generateToken()
-	# However, you can instead generate a token once and reuse it, since the token lasts an hour anyway.
-	token = "N2zGA2Qbrjj6hNOdZka6jx6GVWjpxgDproeIanNpw01rkjUTavHfm2wBdELe5Z9MvBqqiI0TTIfvh4tKiENvE%2Fnq2EcEJt%2BEpS0Dt4jdCKlI9ILC3m%2BswIXQDNKYCJ9MI6%2BgwOOXWlBR0pbHpCPtY9XYZLRvNO2iuWWJujC1JNKOyhbbVQQphBfBJ7krNw741wtPnk98Edum2shiLmdOIzMqAo1TgEsJeRUR3bHfJEo0hkh5U1HJTaT8CkcPyFhZFiAiCL3NPmpVbXLOTVzDVyHKP90rDpowj0W9SRylKw1oJhvwWb79Fd4blwm1XvzNNehClJ%2F11d4K66YL7H2sDImXz5Za85ZuudduZvYBXD6JCqx%2FO8%2Fj01%2FwiQAVYHs2zNjrQObk%2BF74X6PD2nkoUjobUBSkv4K8VupKTE2%2B1hMs2gFt2nD2QCwbzj0LgflAZlcWZNH9pBsKEN1%2BH9C3cPwnBN82S1hw9vKHbXACjgYlervoBXecMyJiMYmfS1rUD8xtUmzvR3fTCJc39OQnaoPKWRCnQLWI0Z0v8WHA4ZSyAMI2tcDcZmL8BB86FSTIaSb7w9IehPFH8xWZV9UxHRfnh%2FP9ToRv06COhfFZVSRYnsooxsPxvA7Kz8QYibPWMBbsoP8LqoDEsqlFg%2FT8awZFdrKP%2FrpfYeOlzD31MZ7rASGaoGS0xGhGntTSDHZzBDg7uglj1Rht%2FWA5rqEv8yrCEftKE89qgaqW10OpDZb042JoBrF5iFb4GXFqpMfKo1R2RYNqlkNrbaHNbZ%2FPHvLiRqsmpzmilO9jMphY9fy7FC18mrV0VDZoFoMApEwiJIXkbYBZIxjp1mvjIxXEjgpK3E0NEpxm6XMWSYnQoF73kg%2FG%2Bm9LF8A1jOIy5WsTeDhNtEprMPw%3D"
-	# b = event_insight_lib.annotateText("""Join the National Air and Space Society for our Vice Adm. Donald D. Engen Flight Jacket Night lecture, featuring engineer and stratospheric explorer Alan Eustace.  Launching at 7:00 am on October 24, 2014, Alan Eustace and the StratEx team set three new world records: highest exit altitude at 41,422 meters (135,899 feet), longest distance of fall with drogue at 37,623 meters (123,435 feet), and highest vertical speed with drogue 1,320 km/hr (820 mph). He was carried aloft by a plastic balloon that stood almost 137 meters (450 feet) tall at launch. Climbing at about 305-meters (1,000-feet) a minute, it took 2.5 hours to reach his top altitude. He was safely back on the ground just 15 minutes after cutting loose from the balloon. Eustace retired as Senior Vice President of Knowledge in April 2015 after 13 years with Google. In his last three years at Google, he worked with the world-class StratEx team to build and test a scuba-like system for the exploration of the stratosphere. His work with the StratEx team was a 2014 finalist for the Collier Award, the most prestigious award in aviation. He was also recognized as the winner of the 2014 Laureus Award for Action Sports. The lecture is for members of the Museum's National Air and Space Society and their guests. There is no charge to attend, but advance reservations are required. Visit airandspace.si.edu/membertickets to reserve yours. Seating is limited. There will also be a buffet reception before the lecture with Mr. Eustace for Society members at the Mercury Friendship 7 level and higher. For more information, call 202.633.2603 or email nasmmembership@si.edu. Flight jacket optional.  The Museum's doors on Jefferson Drive will be closed for the evening. Please use the Independence Avenue entrance.""", token)
-	# print(b)
-	# c = event_insight_lib.annotateText("""WAR/PHOTOGRAPHY: Images of Armed Conflict and Its Aftermath explores the experience of war with an unprecedented collection of 400 photographic prints, books, magazines, albums, and camera equipment, bringing together iconic and unknown images taken by members of the military, commercial portraitists, journalists, amateurs, artists, and numerous Pulitzer Prize–winning photographers. Including the work of some 255 photographers from around the globe who have covered conflicts over the last 166 years, WAR/PHOTOGRAPHY examines the interrelationship between war and photography, reveals the evolution of the medium by which war is recorded and remembered, and explores the range of experience of armed conflict: recruitment, training, embarkation, daily routine, battle, death and destruction, homecoming, and remembrance. In addition to depicting the phases of war, WAR/PHOTOGRAPHY includes portraits of servicemen, military and political leaders, and civilians and refugees. The objects on view include rare daguerreotypes and vintage photographs, such as Roger Fenton’s iconic The Valley of the Shadow of Death (1855) from the Crimean War and an early print of Joe Rosenthal’s Old Glory Goes Up on Mount Suribachi, Iwo Jima. More recent images include a 2008 photograph of the Battle Company of the 173rd Airborne Brigade in eastern Afghanistan by Tim Hetherington. WAR/PHOTOGRAPHY: Images of Armed Conflict and Its Aftermath has been organized by the Museum of Fine Arts, Houston, curatorial team of Anne Wilkes Tucker, Will Michels, and Natalie Zelt. The Brooklyn presentation is organized by Tricia Laughlin Bloom, Associate Curator of Exhibitions, Brooklyn Museum. Generous support for the exhibition in Brooklyn has been provided by the Robert Mapplethorpe Foundation and the Martha A. and Robert S. Rubin Exhibition Fund.""", token)
-	# event_insight_lib.saveFile(a, 'test.json')
-	# data = json.load(open(filename))['concept_insights'][0]['credentials']
-	filename = "initial_events_definitions.json"
-	data = json.load(open(filename))
-	for campaign in data['campaigns']:
-		# print(campaign['desc'])
-		concepts = event_insight_lib.annotateText(campaign['desc'], token)
-		print(concepts)
+	token = event_insight_lib.getToken()
+	backend.saveFile(event_insight_lib.annotateText('The Space Shuttle Pavilion showcases the space shuttle Enterprise, the prototype NASA orbiter that paved the way for America’s successful space shuttle program. Seventeen dynamic exhibit zones feature original artifacts, photographs, audio, and films that immerse visitors in the science and history of Enterprise and the space shuttle era.', token), 'example_output.json')
 
 if __name__ == "__main__":
     main()

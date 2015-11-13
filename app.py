@@ -101,9 +101,6 @@ def start():
 				# TODO: To support other email addresses we can use the flask-wtf validate email subroutine.
 			else:
 				# Now we have the data, contained in request.form['password'], email, i1, ..., i10. We have to process it somehow.
-				# This is where the bulk of the effort in this program is. It will call on methods in event_insight_lib.py.
-				# TODO: Implement waiting loop, since the previous step is probably going to take a few seconds.
-				# "But Aleksey, you can do it asynchronously! Oh, sure, just give me...a week?" "Yeah, never mind."
 				backend.addNewUser(request.form['email'], request.form['password'], [request.form['i1'], request.form['i2'],
 				 request.form['i3'], request.form['i4'], request.form['i5'], request.form['i6'], request.form['i7'], request.form['i8'],
 				 request.form['i9'], request.form['i10']])
@@ -162,5 +159,5 @@ def dashboard():
 ###################################
 port = os.getenv('VCAP_APP_PORT', '5000')
 if __name__ == "__main__":
-	#app.run(host='0.0.0.0', port=int(port), debug=True)
-	app.run(host='0.0.0.0', port=int(port))
+	app.run(host='0.0.0.0', port=int(port), debug=True)
+	# app.run(host='0.0.0.0', port=int(port))
