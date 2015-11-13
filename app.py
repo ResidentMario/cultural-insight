@@ -157,15 +157,6 @@ def dashboard():
 		flash('Your changes have been applied. You may now log back in again.')
 		return render_template('dashboard.html', form=form)
 
-##############
-# TEST PATHS #
-##############
-
-@app.route('/email.html')
-def test():
-	return backend.fetchSendGridKey()
-	# return str(backend.sendEmail('aleksey.bilogur@gmail.com', 'concept-insight@0.0.0.0:5000', 'Hello!', 'Test'))
-
 ###################################
 # RUNTIME CODE
 # `VCAP_APP_PORT` is the port that Bluemix servers are configured to pass and run on.
