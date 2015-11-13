@@ -19,7 +19,11 @@ from flask import flash
 import forms
 import backend
 
+# Declarative.
 app = Flask(__name__)
+
+# The secret key is used by both flask-login and flask-flash
+app.secret_key = str(backend.initializeSecretString())
 
 ########
 # CSRF #
@@ -32,19 +36,21 @@ app = Flask(__name__)
 ################
 # FLASK-LOGIN  #
 # ##############
+# This subsection controls how users log in and out of the webservice.
+# It uses the Flask-Login package.
+# TODO: Move to backend.py?
 
 import flask.ext.login as flask_login
-
-# The secret key is used by both flask-login and flask-flash
-app.secret_key = str(backend.initializeSecretString())
 
 # Initialize the login manager.
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
+'''The default User class implemented by Flask-Login is fine for our purposes.'''
 class User(flask_login.UserMixin):
     pass
 
+'''The user loader implemented by Flask-Login loads a user via email.'''
 @login_manager.user_loader
 def user_loader(email):
 	if not backend.emailAlreadyInUse(email):
@@ -54,6 +60,7 @@ def user_loader(email):
 		user.id = email
 		return user
 
+'''The user loader implemented by Flask-Login loads a user via request form.'''
 @login_manager.request_loader
 def request_loader(request):
 	email = request.form.get('email')
@@ -63,40 +70,23 @@ def request_loader(request):
 	else:
 		user = User()
 		user.id = email
-		# user.is_authenticated = request.form['password'] == request.form['password']
 		return user
 
 ###################
 # END FLASK-LOGIN #
 ###################
 
-# ##############
-# # FLASK-MAIL #
-# ##############
+#########
+# PATHS #
+#########
 
-# from flask_mail import Mail, Message
-# mail = Mail(app)
-
-# @app.route('/emailtest')
-# def test():
-# 	# msg = Message("Hello", sender='cultural-insight' + str(request.url_root), recipients=["aleksey.bilogur@gmail.com"])
-# 	root = str(request.url_root)
-# 	msg = Message("Hello", sender='cultural-insight@cultural-insight.mybluemix.net', recipients=["aleksey.bilogur@gmail.com"])
-# 	msg.body = "testing"
-# 	mail.send(msg)
-# 	return str(msg)
-
-# ##################
-# # END FLASK-MAIL #
-# ##################
-
-# SPLASH: The homepage is a static page consisting of a short description of what this project is all about and two bottons,
-# one pointing to logins and one point to signups.
+'''SPLASH: The homepage is a static page consisting of a short description of what this project is all about and two bottons.
+One button points to logins and one point to signups.'''
 @app.route('/')
 def splash():
     return render_template('splash.html')
 
-# START: On this page users enter the information which the application will use to route them their event information.
+'''START: On this page users enter the information which the application will use to route them their event information.'''
 @app.route('/start.html', methods=['GET', 'POST'])
 def start():
 	form = forms.StartForm(csrf_enabled=False)
@@ -122,6 +112,7 @@ def start():
 		else:
 			return render_template('start.html', form=form, error='Error: You must input all of the required fields.')
 
+'''LOGIN: This is the page on which users log into the application.'''
 @app.route('/login.html', methods=['GET', 'POST'])
 def login():
 	form = forms.LoginForm(csrf_enabled=False)
@@ -138,12 +129,14 @@ def login():
 		else:
 			return render_template('login.html', form=form, error='Error: Incorrect username or password.')
 
+'''LOGOUT: A simple confirmation that redirects to the homepage.'''
 @app.route('/logout.html')
 def logout():
     flask_login.logout_user()
     flash('You were successfully logged out.')
     return redirect('/')
 
+'''DASHBOARD: This is where all of the user account controls live.'''
 @app.route('/dashboard.html', methods=['GET', 'POST'])
 def dashboard():
 	form = forms.DashboardForm(csrf_enabled=False)
@@ -156,6 +149,10 @@ def dashboard():
 			backend.changePassword(flask_login.current_user.get_id(), request.form['password'])
 		flash('Your changes have been applied. You may now log back in again.')
 		return render_template('dashboard.html', form=form)
+
+#############
+# END PATHS #
+#############
 
 ###################################
 # RUNTIME CODE
