@@ -149,15 +149,34 @@ def initializeSecretString():
 # Ultimately everything is stored in terms of concept models.
 # After some deliberation I thought it would be best to just implement these methods functionally, since none of the rest is OOP.
 
-'''The ConceptGraph object handles all of the concept graph abstraction.'''
-class ConceptGraph:
-	graph = []
+'''The ConceptModel object handles all of the concept model abstraction.'''
+class ConceptModel:
+	maturity = 1
+	model = []
+	email = ''
 
-	def get():
-		return graph
+	def __init__(self, _model, _email):
+		self.loadModel(_email)
+		self.email = _email
 
-	def __init__(self):
-		self.graph = []
+	'''Given the email of a registered user, loads a single user's model out of the accounts list.'''
+	def loadModel(self, email, filename='accounts.json'):
+		list_of_users = json.load(open(filename))['accounts']
+		for user in list_of_users:
+			if user['email'] == email:
+				self.model = user['model']['concepts']
+				break
+
+	'''Given the concept model and email of a registered user, saves their model to the accounts list.'''
+	def saveModel(self, filename='accounts.json'):
+		data = json.load(open(filename))
+		for i in range(0, len(data['accounts'])):
+			if data['accounts'][i]['email'] == self.email:
+				data['accounts'][i]['model']['concepts'] = self.model
+				break
+		# Re-encode and save the modified file.
+		with open(filename, 'w') as outfile:
+			json.dump(data, outfile)
 
 '''A statistically analytical method which atomizes a given list of objects and turns them into a ranked list of concepts.
 	Pass-method for now, still to be implemented.
