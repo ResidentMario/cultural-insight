@@ -26,10 +26,14 @@ For testing purposes I will define a 100 (?)-event starter dataset manually. Thi
 
 Flushing out the IBM Watson methods could be tough, given that the API is not being finished. However, only the initial email need be delivered in real time. The rest can be run using tokens, since they will run al at once weekly.
 
-##Development schedule
+##To do
 
-Embed Flask emailing into application.
+Write the `backend.fetchConceptsForInstitution()` method. Use this to implement user concept model initialization via the Registration form.
 
-Create the 100-event manual list. Spin the existing access methods against it to see if I need or want two-iter.
+Create a 100-event manual list. Maybe write a Pythonic Bash script for this purpose?
+
+Test out this list against `backend.compareConceptModels()` to see how durable our modeling is. If it's not good enough yet, perhaps implement `backend.compareConceptModels()` two-iterations deep instead of one.
+
+Write the bulk email script for sending collated events to users via email.
 
 ...

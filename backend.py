@@ -6,6 +6,7 @@
 import json
 import os
 import random
+import itertools
 
 # My own libraries.
 import event_insight_lib
@@ -103,6 +104,7 @@ def authenticateUser(email, password, filename='accounts.json'):
 	return False
 
 '''Deletes an account. May be requested by the user via the dashboard, or via an administrative script.
+	Or, you know, by hand.
 	TODO: admintools?
 	TODO: Implement.'''
 def deleteAccount():
@@ -142,25 +144,20 @@ def initializeSecretString():
 # This section contains the systemic core of the application---its interface with the IBM Watson Concept Insights service.
 # These are high-level methods which wrap low-level methods contained in the event_insight_lib library.
 # Some terminology:
-# A "Concept" is a Wikipedia pagename which is associated with an "Object" when run through the Concept Insights service.
-# An "Object" is a text (or title) which has concepts associated with itself.
-# A "Concept model" is a list of concepts and their confidences associated with a particular account.
-# eg. [['Modern art', 0.67], ['History of music', 0.89]]
+# A "Concept" is a Wikipedia pagename which is associated with an "Concept Model" when run through the Concept Insights service.
+# A "Concept Model" is the model for a particular user's conceptual preferences.
+# eg. {'Modern art': 0.67, 'History of music': 0.89}
 # Ultimately everything is stored in terms of concept models.
-# After some deliberation I thought it would be best to just implement these methods functionally, since none of the rest is OOP.
 
 '''The ConceptModel object handles all of the concept model abstraction.'''
 class ConceptModel:
 	maturity = 1
-	model = []
+	model = dict()
 	email = ''
 
-	def __init__(self, _model=[], _email=''):
+	def __init__(self, _model=dict(), _email=''):
 		self.loadModel(_email)
 		self.email = _email
-
-	#def __init__(self):
-	#	pass
 
 	'''Given the email of a registered user, loads a single user's model out of the accounts list.'''
 	def loadModel(self, email, filename='accounts.json'):
@@ -181,39 +178,56 @@ class ConceptModel:
 		with open(filename, 'w') as outfile:
 			json.dump(data, outfile)
 
-'''A statistically analytical method which atomizes a given list of objects and turns them into a ranked list of concepts.
-	Pass-method for now, still to be implemented.
-	Called by addNewUser(). Implements addObjectToConceptModel().
+'''A method which atomizes a given list of institutions and turns them into a ranked list of concepts.
+	Called by the `addNewUser()` front-end method.
+	Implements `addObjectToConceptModel()`.
+	Implements `getWikipediaArticleLead()`.
+	Implements `event_insight_lib.annotateText()`.
+	Returns a ConceptModel.model sub-object dictionary.
 	TODO: Implement!'''
 def conceptualize(list_of_things):
-	return list_of_things
+	return dict()
 
-'''This method merges two ConceptModel objects into one, using a running average.
-	TODO: Implement!'''
+'''This method merges two ConceptModel objects into one, using a running average.'''
 def addObjectToConceptModel(base_concept_model, merger_concept_model):
 	new_concept_model = ConceptModel()
 	new_list = []
-	# Inclusion-exclusion list of concepts.
-	cA = [concept[0] for concept in base_concept_model.model]
-	print(cA)
-	cB = [concept[0] for concept in merger_concept_model.model]
-	cA = [concept for concept in cA if concept not in cB]
-	cB = [concept for concept in cB if concept not in cA]
-	cAB = [concept for concept in cA + cB if concept in cA and concept in cB]
 	# Increment the maturity of the model.
 	new_concept_model.maturity = base_concept_model.maturity + merger_concept_model.maturity
 	# Match up and average the concepts.
-	pass
-	# TODO: Finish this!
-	return cA
+	bK = sorted(base_concept_model.model.keys())
+	mK = sorted(merger_concept_model.model.keys())
+	for pair in itertools.zip_longest(bK, mK, fillvalue=None):
+		if pair[0] == pair[1]:
+			new_concept_model += { pair[0]: (bK[pair[0]]*base_concept_model.maturity + mK[pair[0]]*merger_concept_model.maturity)/new_concept_model.maturity }
+		else:
+			if pair[0] != None:
+				new_concept_model.model.update({ pair[0]: base_concept_model.model[pair[0]]*base_concept_model.maturity/new_concept_model.maturity })
+			if pair[1] != None:
+				new_concept_model.model.update({ pair[1]: merger_concept_model.model[pair[1]]*merger_concept_model.maturity/new_concept_model.maturity })
+	return new_concept_model.model
 
-'''Compares two concept models and returns a standardized measure of overlap. Open question: two-iter, or one-iter?
+'''Compares two concept models and returns a measure of average overlap (a mock correlation).
+	Open question: two-iter, or one-iter?
 	Two-iter would be more accurate, especially with low information, but more costly, and harder to implement. Might be necessary?
 	Input is a pair of object models.
+	Another open question is whether or not a more sophisticated model could or should be used.
 	Output is a standardized 0-to-1 real describing correlation.
-	This method is used by the email script.
-	TODO: Implement!'''
-def compareConceptModels():
+	This method is used by the email script.'''
+def compareConceptModels(first_concept_model, second_concept_model):
+	overlap = 0
+	num = 0
+	for pair in zip(sorted(first_concept_model.model.keys()), sorted(second_concept_model.model.keys())):
+		if pair[0] == pair[1]:
+			overlap += first_concept_model.model[pair[0]] + second_concept_model.model[pair[1]]
+			num += 1
+	if num == 0:
+		return 0.0
+	else:
+		return round((overlap/num)/min(len(first_concept_model.model),len(second_concept_model.model)),3)
+
+'''A function that returns the concepts related to a particular cultural institution.'''
+def fetchConceptsForInstitution():
 	pass
 
 '''Helper function for saving a file. Not currently used.'''
