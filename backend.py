@@ -155,9 +155,12 @@ class ConceptModel:
 	model = []
 	email = ''
 
-	def __init__(self, _model, _email):
+	def __init__(self, _model=[], _email=''):
 		self.loadModel(_email)
 		self.email = _email
+
+	#def __init__(self):
+	#	pass
 
 	'''Given the email of a registered user, loads a single user's model out of the accounts list.'''
 	def loadModel(self, email, filename='accounts.json'):
@@ -185,10 +188,24 @@ class ConceptModel:
 def conceptualize(list_of_things):
 	return list_of_things
 
-'''This method merges two concept models using a running average.'''
+'''This method merges two ConceptModel objects into one, using a running average.
+	TODO: Implement!'''
 def addObjectToConceptModel(base_concept_model, merger_concept_model):
-	# event_insight_lib.annotateText(concept_object)
+	new_concept_model = ConceptModel()
+	new_list = []
+	# Inclusion-exclusion list of concepts.
+	cA = [concept[0] for concept in base_concept_model.model]
+	print(cA)
+	cB = [concept[0] for concept in merger_concept_model.model]
+	cA = [concept for concept in cA if concept not in cB]
+	cB = [concept for concept in cB if concept not in cA]
+	cAB = [concept for concept in cA + cB if concept in cA and concept in cB]
+	# Increment the maturity of the model.
+	new_concept_model.maturity = base_concept_model.maturity + merger_concept_model.maturity
+	# Match up and average the concepts.
 	pass
+	# TODO: Finish this!
+	return cA
 
 '''Compares two concept models and returns a standardized measure of overlap. Open question: two-iter, or one-iter?
 	Two-iter would be more accurate, especially with low information, but more costly, and harder to implement. Might be necessary?
