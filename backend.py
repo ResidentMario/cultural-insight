@@ -189,7 +189,11 @@ class ConceptModel:
 def conceptualize(list_of_things):
 	return dict()
 
-'''This method merges two ConceptModel objects into one, using a running average.'''
+'''This method merges two ConceptModel objects into one, using a running average.
+	One concept model is considered the base, one is considered the merger.
+	This is because, generally speaking, you will want to be adding fresh data into an already well-defined model.
+	TODO: Tweak math a little bit to account for the number of objects being merged in.
+	Returns the merged ConceptModel object.'''
 def addObjectToConceptModel(base_concept_model, merger_concept_model):
 	new_concept_model = ConceptModel()
 	new_list = []
@@ -227,31 +231,43 @@ def compareConceptModels(first_concept_model, second_concept_model):
 	else:
 		return round((overlap/num)/min(len(first_concept_model.model),len(second_concept_model.model)),3)
 
-# UNFINISHED
-# TODO: Fix up fetchRelatedConcepts() in event_insight_lib.py
-'''Given the name of an institution and an access token this function returns the concepts related to a particular cultural institution.
-	This method is meant to be used on user input during registration.
+# UNFINISHED: Need to finish parseRawCall fist.
+'''Given the name of an institution and an access token this function returns a ConceptModel for the given cultural institution.
+	This method is called as a part of processing on user input during registration.
 	The top-scoring result of a call to annotateText *should*, in ordinary cases, correspond with the article-name of the institution.
 	CRITICAL: This is simply *not* very robust! For now we have to ask that users try to hew as closely as possible to the official names
-	of the institutions they are entering.
+	of the institutions they are entering. Otherwise their results are discarded.
 	This result is then run through event_insight_lib.fetchRelatedConcepts().'''
-def fetchConceptsForInstitution(institution, token, cutoff=0.5, filename='accounts.json'):
+def fetchConceptsForInstitution(institution, token, cutoff=0.5):
+	# Fetch the precise name of the node (article title) associated with the institution.
 	_concept_node = event_insight_lib.annotateText(institution, token)
+	# If the correction call is successful, keep going.
 	if 'annotations' in _concept_node.keys():
 		_concept_node_title = _concept_node['annotations'][0]['concept']['label']
-		# FINISH THIS PART #
-		# _related_concepts = event_insight_lib.fetchRelatedConcepts(_concept_node_title, token)
-		# return _related_concepts
-		# END TO DO        #
-		return _concept_node_title
+		_related_concepts = event_insight_lib.fetchRelatedConcepts(_concept_node_title, token)
+		# INP. Now, with the dictionary of concepts in hand, build it into a ConceptModel object, to be returned using parseRawCall().
+		pass
+		return _related_concepts
+	# Otherwise, if the call was not successful, return a None flag.
 	else:
-		return []
+		return None
 
 '''Returns the result of a Watson query against an event string.
 	Decorator for event_insight_lib.annotateText() that adds a cutoff parameter.
 	TODO: Write!'''
-def fetchConceptsForEvents(event_string, cutoff=0.5):
+def fetchConceptsForEvents(event_string, token, cutoff=0.5):
 	pass
+
+# TODO: Working on this now.
+'''Parses the raw results of a call to the IBM Watson API.
+	Implements a cutoff.
+	Returns a dict that can be assigned to an ObjectModel.'''
+def parseRawCall(raw_output, cutoff=0.5):
+	dat = dict()
+	for concept in raw_output['concepts']:
+		if concept['score'] >= cutoff:
+			dat[concept['concept']['label']] = concept['score']
+	return dat
 
 '''Helper function for saving a file. Not currently used.'''
 def saveFile(content, filename):

@@ -68,25 +68,27 @@ def getToken(tokenfile='token.json'):
 		return generateToken()
 
 '''Given the text to be analyzed and a previous generated access token this method returns the result of an API call to the `annotate_text` Watson method.
-This method forms the core of this library's functionality.
-This method accepts one optional parameter: `content_type`. This defaults to `text/plain`, which expects plaintext input.
-`text/html` is the alternative option.'''
+	This method forms the core of this library's functionality.
+	This method accepts one optional parameter: `content_type`. This defaults to `text/plain`, which expects plaintext input.
+	`text/html` is the alternative option.'''
 def annotateText(text, token, content_type = 'text/plain'):
-	# TEST URL
-	# base_url='https://watson-api-explorer.mybluemix.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/annotate_text'
 	base_url='https://gateway.watsonplatform.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/annotate_text'
 	headers = {'X-Watson-Authorization-Token': token, 'Content-Type': content_type, 'Accept': 'application/json'}
 	dat = text.encode(encoding='UTF-8', errors='ignore')
 	r = requests.post(base_url, headers=headers, data=dat)
 	return json.loads(r.text)
 
-# WORKING ON THIS RIGHT NOW
-# match 'https://gateway.watsonplatform.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/related_concepts?concepts=\["/graphs/wikipedia/en-20120601/concepts/Watson_(computer)"\]&amp;level=1'
-def fetchRelatedConcepts(concept, token, level=1, limit=10):
-	# base_url = 'https://gateway.watsonplatform.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/related_concepts?concepts=\["/graphs/wikipedia/en-20120601/concepts/'
-	base_url = 'https://gateway.watsonplatform.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/related_concepts?concepts=\["/graphs/wikipedia/en-20120601/concepts/'
+'''Given the name of a concept within the Wikipedia concept graph, returns the result of an API call to the `label_search` Watson method.
+	This method requires the name of the concept that is to be searched for. That name must be precise.
+	eg. Smithsonian Institute is good, Smithsonian is not; George Washington is good, Washington is not.
+	Such precision can be achieved, for now, by first running anything needing this method through `event_insight_lib.annotateText()`.
+	However, this is not robust enogh in the long term...
+	Level is an optional parameter that controls how popular the pages must be to be returned.
+	1 is default, 0 is broadest, anything down to 5 is more specific and/or technical.
+	We use 0 as a preset.
+	Limit controls the maximum number of concepts that will be returned. Note that fewer than the limited number may be returned.'''
+def fetchRelatedConcepts(concept, token, level=0, limit=10):
 	headers = {'X-Watson-Authorization-Token': token, 'Content-Type': 'text/plain', 'Accept': 'application/json'}
-	r = requests.get(base_url + concept + "\]&amp;level=1", headers=headers)
-	print(r.status_code)
-	print(r.text)
+	base_url = 'https://gateway.watsonplatform.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/related_concepts?concepts=["/graphs/wikipedia/en-20120601/concepts/' + concept.replace(' ', '_') + '"]&level=' + str(level) + '&limit=' + str(limit)
+	r = requests.get(base_url, headers=headers)
 	return json.loads(r.text)

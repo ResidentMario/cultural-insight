@@ -32,8 +32,14 @@ def main():
 	# b.model = {'A': 0.4, 'B': 0.7, 'D': 0.2}
 	# print(backend.compareConceptModels(a,b))
 
-	# print(backend.fetchConceptsForInstitution('Smithsonian', token))
-	print(event_insight_lib.fetchRelatedConcepts('Smithsonian Institute', token))
+	# Watson API plug-in test.
+	# a = backend.ConceptModel([], 'test@baruchmail.cuny.edu')
+	# a.model = backend.parseRawCall(backend.fetchConceptsForInstitution('Smithsonian', token))
+	# print(a.model)
+	# b = backend.ConceptModel([], 'test@baruchmail.cuny.edu')
+	# b.model = {'test': 0.98}
+	# a.model = backend.addObjectToConceptModel(a, b)
+	# print(a.model)
 
 if __name__ == "__main__":
     main()
