@@ -72,8 +72,21 @@ This method forms the core of this library's functionality.
 This method accepts one optional parameter: `content_type`. This defaults to `text/plain`, which expects plaintext input.
 `text/html` is the alternative option.'''
 def annotateText(text, token, content_type = 'text/plain'):
-	base_url='https://watson-api-explorer.mybluemix.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/annotate_text'
+	# TEST URL
+	# base_url='https://watson-api-explorer.mybluemix.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/annotate_text'
+	base_url='https://gateway.watsonplatform.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/annotate_text'
 	headers = {'X-Watson-Authorization-Token': token, 'Content-Type': content_type, 'Accept': 'application/json'}
 	dat = text.encode(encoding='UTF-8', errors='ignore')
 	r = requests.post(base_url, headers=headers, data=dat)
+	return json.loads(r.text)
+
+# WORKING ON THIS RIGHT NOW
+# match 'https://gateway.watsonplatform.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/related_concepts?concepts=\["/graphs/wikipedia/en-20120601/concepts/Watson_(computer)"\]&amp;level=1'
+def fetchRelatedConcepts(concept, token, level=1, limit=10):
+	# base_url = 'https://gateway.watsonplatform.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/related_concepts?concepts=\["/graphs/wikipedia/en-20120601/concepts/'
+	base_url = 'https://gateway.watsonplatform.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/related_concepts?concepts=\["/graphs/wikipedia/en-20120601/concepts/'
+	headers = {'X-Watson-Authorization-Token': token, 'Content-Type': 'text/plain', 'Accept': 'application/json'}
+	r = requests.get(base_url + concept + "\]&amp;level=1", headers=headers)
+	print(r.status_code)
+	print(r.text)
 	return json.loads(r.text)

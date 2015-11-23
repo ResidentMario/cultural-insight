@@ -7,6 +7,7 @@ import json
 import os
 import random
 import itertools
+import requests
 
 # My own libraries.
 import event_insight_lib
@@ -208,11 +209,11 @@ def addObjectToConceptModel(base_concept_model, merger_concept_model):
 	return new_concept_model.model
 
 '''Compares two concept models and returns a measure of average overlap (a mock correlation).
+	Input is a pair of object models.
 	Open question: two-iter, or one-iter?
 	Two-iter would be more accurate, especially with low information, but more costly, and harder to implement. Might be necessary?
-	Input is a pair of object models.
 	Another open question is whether or not a more sophisticated model could or should be used.
-	Output is a standardized 0-to-1 real describing correlation.
+	Output is a standardized 0-to-1 three-decimal number describing correlation.
 	This method is used by the email script.'''
 def compareConceptModels(first_concept_model, second_concept_model):
 	overlap = 0
@@ -226,8 +227,30 @@ def compareConceptModels(first_concept_model, second_concept_model):
 	else:
 		return round((overlap/num)/min(len(first_concept_model.model),len(second_concept_model.model)),3)
 
-'''A function that returns the concepts related to a particular cultural institution.'''
-def fetchConceptsForInstitution():
+# UNFINISHED
+# TODO: Fix up fetchRelatedConcepts() in event_insight_lib.py
+'''Given the name of an institution and an access token this function returns the concepts related to a particular cultural institution.
+	This method is meant to be used on user input during registration.
+	The top-scoring result of a call to annotateText *should*, in ordinary cases, correspond with the article-name of the institution.
+	CRITICAL: This is simply *not* very robust! For now we have to ask that users try to hew as closely as possible to the official names
+	of the institutions they are entering.
+	This result is then run through event_insight_lib.fetchRelatedConcepts().'''
+def fetchConceptsForInstitution(institution, token, cutoff=0.5, filename='accounts.json'):
+	_concept_node = event_insight_lib.annotateText(institution, token)
+	if 'annotations' in _concept_node.keys():
+		_concept_node_title = _concept_node['annotations'][0]['concept']['label']
+		# FINISH THIS PART #
+		# _related_concepts = event_insight_lib.fetchRelatedConcepts(_concept_node_title, token)
+		# return _related_concepts
+		# END TO DO        #
+		return _concept_node_title
+	else:
+		return []
+
+'''Returns the result of a Watson query against an event string.
+	Decorator for event_insight_lib.annotateText() that adds a cutoff parameter.
+	TODO: Write!'''
+def fetchConceptsForEvents(event_string, cutoff=0.5):
 	pass
 
 '''Helper function for saving a file. Not currently used.'''
