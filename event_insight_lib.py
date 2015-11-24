@@ -87,6 +87,8 @@ def annotateText(text, token, content_type = 'text/plain'):
 	1 is default, 0 is broadest, anything down to 5 is more specific and/or technical.
 	We use 0 as a preset.
 	Limit controls the maximum number of concepts that will be returned. Note that fewer than the limited number may be returned.'''
+# TODO: This method is having issues with parsing the names of things involving non-ASCII characters.
+# Specifically, an example: "Intrepid Air & Space Museum" fails to parse correctly. Need to encode for URL purposes.
 def fetchRelatedConcepts(concept, token, level=0, limit=10):
 	headers = {'X-Watson-Authorization-Token': token, 'Content-Type': 'text/plain', 'Accept': 'application/json'}
 	base_url = 'https://gateway.watsonplatform.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/related_concepts?concepts=["/graphs/wikipedia/en-20120601/concepts/' + concept.replace(' ', '_') + '"]&level=' + str(level) + '&limit=' + str(limit)

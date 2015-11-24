@@ -187,7 +187,22 @@ class ConceptModel:
 	Returns a ConceptModel.model sub-object dictionary.
 	TODO: Implement!'''
 def conceptualize(list_of_things):
+	dat = dict()
+	for thing in list_of_things:
+		pass
 	return dict()
+
+'''Test method to be built out. Will replace the above, once done.'''
+def conceptualize2(list_of_things, token, cutoff=0.5):
+	dat = ConceptModel()
+	for thing in list_of_things:
+		new = ConceptModel()
+		new.model = fetchConceptsForInstitution(thing, token)
+		# If a new model fails definition it will return a None flag.
+		# This signals to this method that it shouldn't bother trying to merge the one into the other, since there's nothing to merge.
+		if new.model != None:
+			dat = addObjectToConceptModel(dat, new)
+	return dat.model
 
 '''This method merges two ConceptModel objects into one, using a running average.
 	One concept model is considered the base, one is considered the merger.
@@ -204,13 +219,13 @@ def addObjectToConceptModel(base_concept_model, merger_concept_model):
 	mK = sorted(merger_concept_model.model.keys())
 	for pair in itertools.zip_longest(bK, mK, fillvalue=None):
 		if pair[0] == pair[1]:
-			new_concept_model += { pair[0]: (bK[pair[0]]*base_concept_model.maturity + mK[pair[0]]*merger_concept_model.maturity)/new_concept_model.maturity }
+			new_concept_model += { pair[0]: round((bK[pair[0]]*base_concept_model.maturity + mK[pair[0]]*merger_concept_model.maturity)/new_concept_model.maturity,3) }
 		else:
 			if pair[0] != None:
-				new_concept_model.model.update({ pair[0]: base_concept_model.model[pair[0]]*base_concept_model.maturity/new_concept_model.maturity })
+				new_concept_model.model.update({ pair[0]: round(base_concept_model.model[pair[0]]*base_concept_model.maturity/new_concept_model.maturity,3) })
 			if pair[1] != None:
-				new_concept_model.model.update({ pair[1]: merger_concept_model.model[pair[1]]*merger_concept_model.maturity/new_concept_model.maturity })
-	return new_concept_model.model
+				new_concept_model.model.update({ pair[1]: round(merger_concept_model.model[pair[1]]*merger_concept_model.maturity/new_concept_model.maturity,3) })
+	return new_concept_model
 
 '''Compares two concept models and returns a measure of average overlap (a mock correlation).
 	Input is a pair of object models.
@@ -231,8 +246,7 @@ def compareConceptModels(first_concept_model, second_concept_model):
 	else:
 		return round((overlap/num)/min(len(first_concept_model.model),len(second_concept_model.model)),3)
 
-# UNFINISHED: Need to finish parseRawCall fist.
-'''Given the name of an institution and an access token this function returns a ConceptModel for the given cultural institution.
+'''Given the name of an institution and an access token this function returns the dictionary model for the given cultural institution.
 	This method is called as a part of processing on user input during registration.
 	The top-scoring result of a call to annotateText *should*, in ordinary cases, correspond with the article-name of the institution.
 	CRITICAL: This is simply *not* very robust! For now we have to ask that users try to hew as closely as possible to the official names
@@ -242,31 +256,36 @@ def fetchConceptsForInstitution(institution, token, cutoff=0.5):
 	# Fetch the precise name of the node (article title) associated with the institution.
 	_concept_node = event_insight_lib.annotateText(institution, token)
 	# If the correction call is successful, keep going.
-	if 'annotations' in _concept_node.keys():
+	if 'annotations' in _concept_node.keys() and len(_concept_node['annotations']) != 0:
 		_concept_node_title = _concept_node['annotations'][0]['concept']['label']
+		print(_concept_node_title)
 		_related_concepts = event_insight_lib.fetchRelatedConcepts(_concept_node_title, token)
-		# INP. Now, with the dictionary of concepts in hand, build it into a ConceptModel object, to be returned using parseRawCall().
-		pass
-		return _related_concepts
+		print(_related_concepts)
+		# INP. Now, with the dictionary of concepts in hand, parse it using parseRawCall() and then return it.
+		return parseRawCall(_related_concepts, cutoff)
 	# Otherwise, if the call was not successful, return a None flag.
 	else:
 		return None
 
 '''Returns the result of a Watson query against an event string.
 	Decorator for event_insight_lib.annotateText() that adds a cutoff parameter.
-	TODO: Write!'''
+	TODO: Test!'''
 def fetchConceptsForEvents(event_string, token, cutoff=0.5):
-	pass
+	return parseRawCall(event_insight_lib.annotateText(event_string), cutoff)
 
-# TODO: Working on this now.
 '''Parses the raw results of a call to the IBM Watson API.
 	Implements a cutoff.
+	Implemented as the end step for the `fetchConceptsForEvents()` and `fetchConceptsForInstitution()` front-facing methods.
 	Returns a dict that can be assigned to an ObjectModel.'''
 def parseRawCall(raw_output, cutoff=0.5):
 	dat = dict()
-	for concept in raw_output['concepts']:
-		if concept['score'] >= cutoff:
-			dat[concept['concept']['label']] = concept['score']
+	# If there is nothing to parse, don't parse it.
+	if 'concepts' not in raw_output.keys():
+		return dat
+	else:
+		for concept in raw_output['concepts']:
+			if concept['score'] >= cutoff:
+				dat[concept['concept']['label']] = concept['score']
 	return dat
 
 '''Helper function for saving a file. Not currently used.'''

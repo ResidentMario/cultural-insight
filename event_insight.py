@@ -1,5 +1,5 @@
 '''event-insight.py
-    Test script for event_insight_lib.py'''
+    Test script.'''
 
 import event_insight_lib
 import backend
@@ -9,11 +9,11 @@ def main():
 	token = event_insight_lib.getToken()
 	# backend.saveFile(event_insight_lib.annotateText('The Space Shuttle Pavilion showcases the space shuttle Enterprise, the prototype NASA orbiter that paved the way for America’s successful space shuttle program. Seventeen dynamic exhibit zones feature original artifacts, photographs, audio, and films that immerse visitors in the science and history of Enterprise and the space shuttle era.', token), 'example_output.json')
 
-	# ConceptModel definition and saving test.
+	# ConceptModel definition test.
 	# a = backend.ConceptModel([], 'test@baruchmail.cuny.edu')
-	# a.model = {'test': 0.98}
-	# a.saveModel()
+	# a.model = backend.fetchConceptsForInstitution('Smithsonian', token)
 	# print(a.model)
+	# a.saveModel()
 
 	# ConceptModel manipulation test.
 	# a = backend.ConceptModel(None, 'testA')
@@ -38,8 +38,15 @@ def main():
 	# print(a.model)
 	# b = backend.ConceptModel([], 'test@baruchmail.cuny.edu')
 	# b.model = {'test': 0.98}
-	# a.model = backend.addObjectToConceptModel(a, b)
+	# a = backend.addObjectToConceptModel(a, b)
 	# print(a.model)
+
+	# Conceptualization test.
+	print(backend.fetchConceptsForInstitution('Intrepid Museum', token, cutoff=0.2))
+
+	# c = ['Smithsonian Institute', 'Intrepid Sea, Air & Space Museum', 'Rubin Museum']
+	# r = backend.conceptualize2(c, token)
+	# print(r)
 
 if __name__ == "__main__":
     main()
