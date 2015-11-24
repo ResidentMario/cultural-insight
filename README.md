@@ -1,3 +1,6 @@
+##About
+The Cultural Insight tool is a web-based Bluemix-hosted cultural engagement tool. Users of the web portal are able to sign up for a weekly email service which sends them a shortlist of events happening in New York City that, based on a model of that user's interests, they would be interested in attending. The recommendation engine is implemented in Python using the Concept Insight IBM Watson tool; the webservice is implenented in Python Flask. The idea behind this application is that it will funnel the vast amount of information thrown at those that live in the city down to a core of causes that they care about, increasing their engagement by surfacing events that they are actually interested in attending.
+
 ##Structure of the application
 **Procfile** - This command is run whenever the application is restarted on Bluemix. It should be linked to your application's webservice: in this case, `app.py`. It is represented in the form `web: <command>` where `<command>`..
 
@@ -7,7 +10,7 @@
 
 **README.md** - This readme.
 
-**app.py** - The python web app, implemented in Python [Flask](http://flask.pocoo.org/). The routes are defined in the application using the @app.route() calls. This application has a / route and a /myapp route defined. The application deployed to Bluemix needs to listen to the port defined by the VCAP_APP_PORT environment variable as seen here:
+**app.py** - The python web app, implemented in Python [Flask](http://flask.pocoo.org/). The routes are defined in the application using the @app.route() calls. The application deployed to Bluemix needs to listen to the port defined by the VCAP_APP_PORT environment variable as seen here:
 ```python
 port = os.getenv('VCAP_APP_PORT', '5000')
 if __name__ == "__main__":
@@ -18,9 +21,9 @@ This is the port given to your application so that http requests can be routed t
 
 ##Development sketch
 
-Bluemix does not provide an event scheduling service, so the email capacity will have to be done via a administrative portal in the web app in the long run, and probably out of the local environment in the short run. This is done via the flask-email plugin. Emails ought to be delivered on a weekly basis.
+Bluemix does not provide an event scheduling service, so the email capacity will have to be done via a administrative portal in the web app in the long run, and probably out of the local environment in the short run. This is done via the sendgrid service. Emails ought to be delivered on a weekly basis.
 
-There is no feasible way to database cultural events. Instead this application will rely on a mock-up "content curator", someone who will use an admintool to plug events into the database.
+There is no feasible way to database cultural events on the fly (this is an entirely seperate project). Instead this application will likely rely on a mock-up "content curator", someone who will use an admintool to plug events into the database, unless I am able to find a durable database for this.
 
 For testing purposes I will define a 100 (?)-event starter dataset manually. This dataset will not be metricated by date.
 

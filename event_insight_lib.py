@@ -8,6 +8,7 @@ import json
 import os
 import requests
 from time import strftime, gmtime
+import urllib
 
 '''Finds the credentials file describing the token that's needed to access Watson/Bluemix services.
 Returns a {url, username, password} dictionary token if successful, fataly aborts if not.
@@ -89,8 +90,13 @@ def annotateText(text, token, content_type = 'text/plain'):
 	Limit controls the maximum number of concepts that will be returned. Note that fewer than the limited number may be returned.'''
 # TODO: This method is having issues with parsing the names of things involving non-ASCII characters.
 # Specifically, an example: "Intrepid Air & Space Museum" fails to parse correctly. Need to encode for URL purposes.
+# Fix this up using http://stackoverflow.com/questions/5607551/python-urlencode-string
 def fetchRelatedConcepts(concept, token, level=0, limit=10):
 	headers = {'X-Watson-Authorization-Token': token, 'Content-Type': 'text/plain', 'Accept': 'application/json'}
-	base_url = 'https://gateway.watsonplatform.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/related_concepts?concepts=["/graphs/wikipedia/en-20120601/concepts/' + concept.replace(' ', '_') + '"]&level=' + str(level) + '&limit=' + str(limit)
+	# concept = urllib.parse.quote(concept)
+	# Percent encode the URI according to Wikipedia's encoding scheme.
+	concept = urllib.parse.quote(concept.replace(' ', '_'), safe='_,')
+	base_url = 'https://gateway.watsonplatform.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/related_concepts?concepts=["/graphs/wikipedia/en-20120601/concepts/' + concept + '"]&level=' + str(level) + '&limit=' + str(limit)
+	print(base_url)
 	r = requests.get(base_url, headers=headers)
 	return json.loads(r.text)

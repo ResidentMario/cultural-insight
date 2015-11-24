@@ -3,6 +3,7 @@
 
 import event_insight_lib
 import backend
+import urllib
 
 def main():
 	# Tokenization and API access test.
@@ -42,11 +43,13 @@ def main():
 	# print(a.model)
 
 	# Conceptualization test.
-	print(backend.fetchConceptsForInstitution('Intrepid Museum', token, cutoff=0.2))
+	# print(backend.fetchConceptsForInstitution('Intrepid Museum', token, cutoff=0.2))
+	# print(urllib.parse.quote('Intrepid Air & Space Museum'.encode("utf8")))
+	# print(urllib.parse.quote('Intrepid Sea, Air & Space Museum'.replace(' ', '_'), safe='_,'))
 
-	# c = ['Smithsonian Institute', 'Intrepid Sea, Air & Space Museum', 'Rubin Museum']
-	# r = backend.conceptualize2(c, token)
-	# print(r)
+	c = ['Smithsonian Institute', 'Intrepid Sea, Air & Space Museum', 'Rubin Museum']
+	r = backend.conceptualize2(c, token)
+	print(r)
 
 if __name__ == "__main__":
     main()

@@ -23,7 +23,7 @@ import sendgrid
 # SendGrid secret key.
 api_key = None
 
-'''Loads the SendGrid secret key from its JSON storage file. Called by `generateEmail()`, and by sendEmail() from there.'''
+'''Loads the SendGrid secret key from its JSON storage file. Called by `generateEmail()`, and by `sendEmail()` from there.'''
 def fetchSendGridKey(filename='sendgrid_key.json'):
 	return json.load(open(filename))['api_key']
 
@@ -66,7 +66,6 @@ def iterEmails(filename='accounts.json'):
 # INTERFACE #
 #############
 # This section contains all of the backend methods servicing the user interface layer of the webservice.
-# TODO: Rewrite from an OOP perspective using a User abstraction.
 
 '''Checks if an email is already in use. Returns True if it is, False if not.'''
 def emailAlreadyInUse(new_email, filename='accounts.json'):
@@ -145,10 +144,12 @@ def initializeSecretString():
 # This section contains the systemic core of the application---its interface with the IBM Watson Concept Insights service.
 # These are high-level methods which wrap low-level methods contained in the event_insight_lib library.
 # Some terminology:
-# A "Concept" is a Wikipedia pagename which is associated with an "Concept Model" when run through the Concept Insights service.
-# A "Concept Model" is the model for a particular user's conceptual preferences.
+# A "Concept Node" is a Wikipedia pagename which is associated with an "Concept Model" when run through the Concept Insights service.
+# The "Concept Model" is the model for a particular user's conceptual preferences.
 # eg. {'Modern art': 0.67, 'History of music': 0.89}
-# Ultimately everything is stored in terms of concept models.
+# These are associated with the .model property of an ObjectModel object, which stores the model and some metadata about the model:
+# its maturity and the email of the associated account.
+# ConceptModel objects are read from and written to `accounts.json` for permanent storage. 
 
 '''The ConceptModel object handles all of the concept model abstraction.'''
 class ConceptModel:
@@ -258,10 +259,7 @@ def fetchConceptsForInstitution(institution, token, cutoff=0.5):
 	# If the correction call is successful, keep going.
 	if 'annotations' in _concept_node.keys() and len(_concept_node['annotations']) != 0:
 		_concept_node_title = _concept_node['annotations'][0]['concept']['label']
-		print(_concept_node_title)
 		_related_concepts = event_insight_lib.fetchRelatedConcepts(_concept_node_title, token)
-		print(_related_concepts)
-		# INP. Now, with the dictionary of concepts in hand, parse it using parseRawCall() and then return it.
 		return parseRawCall(_related_concepts, cutoff)
 	# Otherwise, if the call was not successful, return a None flag.
 	else:
@@ -271,7 +269,7 @@ def fetchConceptsForInstitution(institution, token, cutoff=0.5):
 	Decorator for event_insight_lib.annotateText() that adds a cutoff parameter.
 	TODO: Test!'''
 def fetchConceptsForEvents(event_string, token, cutoff=0.5):
-	return parseRawCall(event_insight_lib.annotateText(event_string), cutoff)
+	return parseRawCall(event_insight_lib.annotateText(event_string, token), cutoff)
 
 '''Parses the raw results of a call to the IBM Watson API.
 	Implements a cutoff.
