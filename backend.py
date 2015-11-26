@@ -164,10 +164,10 @@ def initializeSecretString():
 # eg. {'Modern art': 0.67, 'History of music': 0.89}
 # These are associated with the .model property of an ObjectModel object, which stores the model and some metadata about the model:
 # its maturity and the email of the associated account.
-# ConceptModel objects are read from and written to `accounts.json` for permanent storage. 
+# ConceptModel objects are read from and written to `accounts.json` for permanent storage.
 
-"""The ConceptModel object handles all of the concept model abstraction."""
 class ConceptModel:
+	"""The ConceptModel object handles all of the concept model abstraction."""
 	maturity = 1
 	model = dict()
 	email = ''
@@ -194,6 +194,13 @@ class ConceptModel:
 		# Re-encode and save the modified file.
 		with open(filename, 'w') as outfile:
 			json.dump(data, outfile)
+
+def getToken(tokenfile='token.json'):
+	"""
+	This is the primary-use access method meant to be used throughout the application.
+	Path-wrapper for the getToken() method in event_insight_lib.py.
+	"""
+	return event_insight_lib.getToken(tokenfile)
 
 def addNewUser(user_email, user_password, user_institutions_list, token, filename='accounts.json'):
 	"""

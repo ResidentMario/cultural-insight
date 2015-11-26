@@ -8,7 +8,6 @@ import json
 import os
 import requests
 from time import strftime, gmtime
-import urllib
 
 def importCredentials(filename='concept_insight_credentials.json'):
 	"""
@@ -100,7 +99,6 @@ def fetchRelatedConcepts(concept, token, level=0, limit=10):
 	Limit controls the maximum number of concepts that will be returned. Note that fewer than the limited number may be returned.
 	"""
 	headers = {'X-Watson-Authorization-Token': token, 'Content-Type': 'text/plain', 'Accept': 'application/json'}
-	# concept = urllib.parse.quote(concept)
 	# Percent encode the URI according to Wikipedia's encoding scheme.
 	concept = urllib.parse.quote(concept.replace(' ', '_'), safe='_,')
 	base_url = 'https://gateway.watsonplatform.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/related_concepts?concepts=["/graphs/wikipedia/en-20120601/concepts/' + concept + '"]&level=' + str(level) + '&limit=' + str(limit)

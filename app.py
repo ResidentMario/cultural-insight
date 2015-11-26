@@ -1,10 +1,7 @@
-"""app.py
-    This file implements this application's webservice: specifically, only those aspects of the program related to pagation and interface.
-    Back-end methods, primarily those related to the data interface, are defined in backend.py. ???
-    The email service is defined seperately, in email_service.py. ???
-    Testing methods go into test.py. ???
-    TODO: Figure out that organization.
-    TODO: Investigate flask-email and flask-login. Will need them in this architecture."""
+"""
+app.py
+This Flask file implements this application's webservice.
+"""
 
 # Redistributables.
 import os
@@ -103,8 +100,8 @@ def start():
 				return render_template('start.html', form=form, error='Error: Please input a Baruch email, only, please! Other email addresses are not supported yet.')
 				# TODO: To support other email addresses we can use the flask-wtf validate email subroutine.
 			else:
-				# Now we have the data, contained in request.form['password'], email, i1, ..., i10. We have to process it somehow.
-				backend.addNewUser(request.form['email'], request.form['password'], [request.form['i1'], request.form['i2'], request.form['i3'], request.form['i4'], request.form['i5']], event_insight_lib.getToken())
+				# Now we have the data, contained in request.form['password'], email, i1, ..., i5. We have to process it somehow.
+				backend.addNewUser(request.form['email'], request.form['password'], [request.form['i1'], request.form['i2'], request.form['i3'], request.form['i4'], request.form['i5']], backend.getToken())
 				user = User()
 				email = request.form['email']
 				user.id = email
