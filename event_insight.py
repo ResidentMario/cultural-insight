@@ -1,5 +1,5 @@
-'''event-insight.py
-    Test script.'''
+"""event-insight.py
+    Test script."""
 
 import event_insight_lib
 import backend

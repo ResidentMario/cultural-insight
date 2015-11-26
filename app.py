@@ -1,10 +1,10 @@
-'''app.py
+"""app.py
     This file implements this application's webservice: specifically, only those aspects of the program related to pagation and interface.
     Back-end methods, primarily those related to the data interface, are defined in backend.py. ???
     The email service is defined seperately, in email_service.py. ???
     Testing methods go into test.py. ???
     TODO: Figure out that organization.
-    TODO: Investigate flask-email and flask-login. Will need them in this architecture.'''
+    TODO: Investigate flask-email and flask-login. Will need them in this architecture."""
 
 # Redistributables.
 import os
@@ -47,13 +47,13 @@ import flask.ext.login as flask_login
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
-'''The default User class implemented by Flask-Login is fine for our purposes.'''
 class User(flask_login.UserMixin):
-    pass
+	"""The default User class implemented by Flask-Login is fine for our purposes."""
+	pass
 
-'''The user loader implemented by Flask-Login loads a user via email.'''
 @login_manager.user_loader
 def user_loader(email):
+	"""The user loader implemented by Flask-Login loads a user via email."""
 	if not backend.emailAlreadyInUse(email):
 		return
 	else:
@@ -61,9 +61,9 @@ def user_loader(email):
 		user.id = email
 		return user
 
-'''The user loader implemented by Flask-Login loads a user via request form.'''
 @login_manager.request_loader
 def request_loader(request):
+	"""The user loader implemented by Flask-Login loads a user via request form."""
 	email = request.form.get('email')
 	password = request.form.get('password')
 	if not backend.authenticateUser(email, password):
@@ -81,15 +81,17 @@ def request_loader(request):
 # PATHS #
 #########
 
-'''SPLASH: The homepage is a static page consisting of a short description of what this project is all about and two bottons.
-One button points to logins and one point to signups.'''
 @app.route('/')
 def splash():
-    return render_template('splash.html')
+	"""
+	SPLASH: The homepage is a static page consisting of a short description of what this project is all about and two bottons.
+	One button points to logins and one point to signups.
+	"""
+	return render_template('splash.html')
 
-'''START: On this page users enter the information which the application will use to route them their event information.'''
 @app.route('/start.html', methods=['GET', 'POST'])
 def start():
+	"""START: On this page users enter the information which the application will use to route them their event information."""
 	form = forms.StartForm(csrf_enabled=False)
 	if request.method == 'GET':
 		return render_template('start.html', form=form)
@@ -112,9 +114,9 @@ def start():
 		else:
 			return render_template('start.html', form=form, error='Error: You must input all of the required fields.')
 
-'''LOGIN: This is the page on which users log into the application.'''
 @app.route('/login.html', methods=['GET', 'POST'])
 def login():
+	"""LOGIN: This is the page on which users log into the application."""
 	form = forms.LoginForm(csrf_enabled=False)
 	if request.method == 'GET':
 		return render_template('login.html', form=form)
@@ -129,16 +131,16 @@ def login():
 		else:
 			return render_template('login.html', form=form, error='Error: Incorrect username or password.')
 
-'''LOGOUT: A simple confirmation that redirects to the homepage.'''
 @app.route('/logout.html')
 def logout():
-    flask_login.logout_user()
-    flash('You were successfully logged out.')
-    return redirect('/')
+	"""LOGOUT: A simple confirmation that redirects to the homepage."""
+	flask_login.logout_user()
+	flash('You were successfully logged out.')
+	return redirect('/')
 
-'''DASHBOARD: This is where all of the user account controls live.'''
 @app.route('/dashboard.html', methods=['GET', 'POST'])
 def dashboard():
+	"""DASHBOARD: This is where all of the user account controls live."""
 	form = forms.DashboardForm(csrf_enabled=False)
 	if request.method == 'GET':
 		return render_template('dashboard.html', form=form)
@@ -162,5 +164,5 @@ def dashboard():
 ###################################
 port = os.getenv('VCAP_APP_PORT', '5000')
 if __name__ == "__main__":
-	app.run(host='0.0.0.0', port=int(port), debug=True)
-	# app.run(host='0.0.0.0', port=int(port))
+	# app.run(host='0.0.0.0', port=int(port), debug=True)
+	app.run(host='0.0.0.0', port=int(port))

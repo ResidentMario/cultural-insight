@@ -1,6 +1,6 @@
-'''backend.py
+"""backend.py
 	This library defines the backend used by the application webservice, `app.py`.
-	The Watson/Core methods contained here are wrappers of `event_insight_lib.py` methods.''' 
+	The Watson/Core methods contained here are wrappers of `event_insight_lib.py` methods."""
 
 # Redistributables.
 import json
@@ -23,13 +23,15 @@ import sendgrid
 # SendGrid secret key.
 api_key = None
 
-'''Loads the SendGrid secret key from its JSON storage file. Called by `generateEmail()`, and by `sendEmail()` from there.'''
 def fetchSendGridKey(filename='sendgrid_key.json'):
+	"""Loads the SendGrid secret key from its JSON storage file. Called by `generateEmail()`, and by `sendEmail()` from there."""
 	return json.load(open(filename))['api_key']
 
-'''Generates a sendgrid.Mail() object containing the given subject and content.
-	Returns the object.'''
 def generateEmail(subject, content):
+	"""
+	Generates a sendgrid.Mail() object containing the given subject and content.
+	Returns the object.
+	"""
 	message = sendgrid.Mail()
 	message.set_subject(subject)
 	message.set_html(content)
@@ -37,8 +39,8 @@ def generateEmail(subject, content):
 	# The SendGrid API doesn't have any getter methods?
 	return message
 
-'''Generic email template, implemented using the SendGrid emailer service. Extended by application-specific methods.'''
 def sendEmail(_to, _from, subject, content):
+	"""Generic email template, implemented using the SendGrid emailer service. Extended by application-specific methods."""
 	# Fetch the SendGrid key from the hidden JSON keyfile, if it has not been defined already.
 	if api_key == None:
 		api_key = fetchSendGridKey()
@@ -50,10 +52,12 @@ def sendEmail(_to, _from, subject, content):
 	# The SendGrid send method returns a tuple (http_status_code, message) that I return here for debugging purposes.
 	return chk
 
-'''Returns a user email iterator. Used by the email script.
-	Should I be using an iterator? It's not neccessary, probably, but I need to use a little bit of flair, for practice. :)
-	NOTE: Untested.'''
 def iterEmails(filename='accounts.json'):
+	"""
+	Returns a user email iterator. Used by the email script.
+	Should I be using an iterator? It's not neccessary, probably, but I need to use a little bit of flair, for practice. :)
+	NOTE: Untested.
+	"""
 	if filename in [f for f in os.listdir('.') if os.path.isfile(f)]:
 		user_data = json.load(open(filename))
 	yield user_data['email']
@@ -67,8 +71,8 @@ def iterEmails(filename='accounts.json'):
 #############
 # This section contains all of the backend methods servicing the user interface layer of the webservice.
 
-'''Checks if an email is already in use. Returns True if it is, False if not.'''
 def emailAlreadyInUse(new_email, filename='accounts.json'):
+	"""Checks if an email is already in use. Returns True if it is, False if not."""
 	# Open the accounts file.
 	if filename in [f for f in os.listdir('.') if os.path.isfile(f)]:
 		list_of_users = json.load(open(filename))['accounts']
@@ -78,10 +82,12 @@ def emailAlreadyInUse(new_email, filename='accounts.json'):
 			return True
 	return False
 
-'''Adds an email to the accounts file.
-	The interests field is a dummy variable, for now. It is expected to be a list of three to ten elements.
-	TODO: Thread Concept Insights through the inputted interests (see `conceptualize()`), splice together an early model, and log that.'''
 def addNewUser(new_user_email, new_user_password, new_user_institutions_list, filename='accounts.json'):
+	"""
+	Adds an email to the accounts file.
+	The interests field is a dummy variable, for now. It is expected to be a list of three to ten elements.
+	TODO: Thread Concept Insights through the inputted interests (see `conceptualize()`), splice together an early model, and log that.
+	"""
 	# Open the JSON file.
 	if filename in [f for f in os.listdir('.') if os.path.isfile(f)]:
 		user_data = json.load(open(filename))
@@ -94,8 +100,8 @@ def addNewUser(new_user_email, new_user_password, new_user_institutions_list, fi
 	# with open(filename, 'w') as outfile:
 	# 	json.dump(user_data, outfile)
 
-'''Authenticates a user's email-password combination.'''
 def authenticateUser(email, password, filename='accounts.json'):
+	"""Authenticates a user's email-password combination."""
 	if filename in [f for f in os.listdir('.') if os.path.isfile(f)]:
 		list_of_users = json.load(open(filename))['accounts']
 	# Check to see if the selected email appears in the list.
@@ -104,16 +110,20 @@ def authenticateUser(email, password, filename='accounts.json'):
 			return True
 	return False
 
-'''Deletes an account. May be requested by the user via the dashboard, or via an administrative script.
+def deleteAccount():
+	"""
+	Deletes an account. May be requested by the user via the dashboard, or via an administrative script.
 	Or, you know, by hand.
 	TODO: admintools?
-	TODO: Implement.'''
-def deleteAccount():
+	TODO: Implement.
+	"""
 	pass
 
-'''Changes the email associated with an account. Must be requested by the user via the dashboard.
-	TODO: Implement. The method below does not quite work. Needs a while loop.'''
 def changeEmail(current_email, new_email, filename='accounts.json'):
+	"""
+	Changes the email associated with an account. Must be requested by the user via the dashboard.
+	TODO: Implement. The method below does not quite work. Needs a while loop.
+	"""
 	#if filename in [f for f in os.listdir('.') if os.path.isfile(f)]:
 	#	list_of_users = json.load(open(filename))['accounts']
 	## Check to see if the selected email appears in the list.
@@ -125,14 +135,18 @@ def changeEmail(current_email, new_email, filename='accounts.json'):
 	#		break
 	pass			
 
-'''Changes the password associated with an account. Must be requested by the user via the dashboard.
-	TODO: Implement.'''
 def changePassword(current_email, new_password, filename='accounts.json'):
+	"""
+	Changes the password associated with an account. Must be requested by the user via the dashboard.
+	TODO: Implement.
+	"""
 	pass
 
-'''Imports the secret string used by some of the Flask plug-ins for security purposes.
-	The secret string is be a simple randomly generated numerical, defined at runtime.'''
 def initializeSecretString():
+	"""
+	Imports the secret string used by some of the Flask plug-ins for security purposes.
+	The secret string is be a simple randomly generated numerical, defined at runtime.
+	"""
 	return random.random()
 
 #################
@@ -152,7 +166,7 @@ def initializeSecretString():
 # its maturity and the email of the associated account.
 # ConceptModel objects are read from and written to `accounts.json` for permanent storage. 
 
-'''The ConceptModel object handles all of the concept model abstraction.'''
+"""The ConceptModel object handles all of the concept model abstraction."""
 class ConceptModel:
 	maturity = 1
 	model = dict()
@@ -162,16 +176,16 @@ class ConceptModel:
 		self.loadModel(_email)
 		self.email = _email
 
-	'''Given the email of a registered user, loads a single user's model out of the accounts list.'''
 	def loadModel(self, email, filename='accounts.json'):
+		"""Given the email of a registered user, loads a single user's model out of the accounts list."""
 		list_of_users = json.load(open(filename))['accounts']
 		for user in list_of_users:
 			if user['email'] == email:
 				self.model = user['model']['concepts']
 				break
 
-	'''Given the concept model and email of a registered user, saves their model to the accounts list.'''
 	def saveModel(self, filename='accounts.json'):
+		"""Given the concept model and email of a registered user, saves their model to the accounts list."""
 		data = json.load(open(filename))
 		for i in range(0, len(data['accounts'])):
 			if data['accounts'][i]['email'] == self.email:
@@ -181,16 +195,12 @@ class ConceptModel:
 		with open(filename, 'w') as outfile:
 			json.dump(data, outfile)
 
-'''Font-facing method, which called from app.py, handles all of the work of registering a user.
-	Takes as a parameter the name of the user, their password, and a list consisting of all of the institutions to be assigned.
-	NOTE: This is the method that is called by the webapp as the final step of the registration process.'''
 def addNewUser(user_email, user_password, user_institutions_list, token, filename='accounts.json'):
-	# user = ConceptModel()
-	# user.model = conceptualize(user_institutions_list, token)
-	# user.model = conceptualize(user_institutions_list, token)
-	# user.email = user_email
-	# user.saveModel()
-	# return user
+	"""
+	Font-facing method, which called from app.py, handles all of the work of registering a user.
+	Takes as a parameter the name of the user, their password, and a list consisting of all of the institutions to be assigned.
+	NOTE: This is the method that is called by the webapp as the final step of the registration process.
+	"""
 	user = ConceptModel()
 	user.model = conceptualize(user_institutions_list, token)
 	user.email = user_email
@@ -209,11 +219,13 @@ def addNewUser(user_email, user_password, user_institutions_list, token, filenam
 		json.dump(data, outfile, indent=4)
 	return user.model
 
-'''A method which atomizes a given list of institutions and turns them into a ranked list of concepts.
+def conceptualize(list_of_things, token, cutoff=0.5):
+	"""
+	A method which atomizes a given list of institutions and turns them into a ranked list of concepts.
 	Called by the `addNewUser()` front-end method.
 	Implements `fetchConceptsForInstitution()` and `addObjectToConceptModel()`.
-	Returns a ConceptModel.model sub-object dictionary.'''
-def conceptualize(list_of_things, token, cutoff=0.5):
+	Returns a ConceptModel.model sub-object dictionary.
+	"""
 	dat = ConceptModel()
 	for thing in list_of_things:
 		new = ConceptModel()
@@ -224,12 +236,14 @@ def conceptualize(list_of_things, token, cutoff=0.5):
 			dat = addObjectToConceptModel(dat, new)
 	return dat.model
 
-'''This method merges two ConceptModel objects into one, using a running average.
+def addObjectToConceptModel(base_concept_model, merger_concept_model):
+	"""
+	This method merges two ConceptModel objects into one, using a running average.
 	One concept model is considered the base, one is considered the merger.
 	This is because, generally speaking, you will want to be adding fresh data into an already well-defined model.
 	TODO: Tweak math a little bit to account for the number of objects being merged in.
-	Returns the merged ConceptModel object.'''
-def addObjectToConceptModel(base_concept_model, merger_concept_model):
+	Returns the merged ConceptModel object.
+	"""
 	new_concept_model = ConceptModel()
 	new_list = []
 	# Increment the maturity of the model.
@@ -247,14 +261,16 @@ def addObjectToConceptModel(base_concept_model, merger_concept_model):
 				new_concept_model.model.update({ pair[1]: round(merger_concept_model.model[pair[1]]*merger_concept_model.maturity/new_concept_model.maturity,3) })
 	return new_concept_model
 
-'''Compares two concept models and returns a measure of average overlap (a mock correlation).
+def compareConceptModels(first_concept_model, second_concept_model):
+	"""
+	Compares two concept models and returns a measure of average overlap (a mock correlation).
 	Input is a pair of object models.
 	Open question: two-iter, or one-iter?
 	Two-iter would be more accurate, especially with low information, but more costly, and harder to implement. Might be necessary?
 	Another open question is whether or not a more sophisticated model could or should be used.
 	Output is a standardized 0-to-1 three-decimal number describing correlation.
-	This method is used by the email script.'''
-def compareConceptModels(first_concept_model, second_concept_model):
+	This method is used by the email script.
+	"""
 	overlap = 0
 	num = 0
 	for pair in zip(sorted(first_concept_model.model.keys()), sorted(second_concept_model.model.keys())):
@@ -266,13 +282,15 @@ def compareConceptModels(first_concept_model, second_concept_model):
 	else:
 		return round((overlap/num)/min(len(first_concept_model.model),len(second_concept_model.model)),3)
 
-'''Given the name of an institution and an access token this function returns the dictionary model for the given cultural institution.
+def fetchConceptsForInstitution(institution, token, cutoff=0.5):
+	"""
+	Given the name of an institution and an access token this function returns the dictionary model for the given cultural institution.
 	This method is called as a part of processing on user input during registration.
 	The top-scoring result of a call to annotateText *should*, in ordinary cases, correspond with the article-name of the institution.
 	CRITICAL: This is simply *not* very robust! For now we have to ask that users try to hew as closely as possible to the official names
 	of the institutions they are entering. Otherwise their results are discarded.
-	This result is then run through event_insight_lib.fetchRelatedConcepts().'''
-def fetchConceptsForInstitution(institution, token, cutoff=0.5):
+	This result is then run through event_insight_lib.fetchRelatedConcepts().
+	"""
 	# Fetch the precise name of the node (article title) associated with the institution.
 	_concept_node = event_insight_lib.annotateText(institution, token)
 	# If the correction call is successful, keep going.
@@ -284,17 +302,21 @@ def fetchConceptsForInstitution(institution, token, cutoff=0.5):
 	else:
 		return None
 
-'''Returns the result of a Watson query against an event string.
-	Decorator for event_insight_lib.annotateText() that adds a cutoff parameter.
-	TODO: Test!'''
 def fetchConceptsForEvents(event_string, token, cutoff=0.5):
+	"""
+	Returns the result of a Watson query against an event string.
+	Decorator for event_insight_lib.annotateText() that adds a cutoff parameter.
+	TODO: Test!
+	"""
 	return parseRawCall(event_insight_lib.annotateText(event_string, token), cutoff)
 
-'''Parses the raw results of a call to the IBM Watson API.
+def parseRawCall(raw_output, cutoff=0.5):
+	"""
+	Parses the raw results of a call to the IBM Watson API.
 	Implements a cutoff.
 	Implemented as the end step for the `fetchConceptsForEvents()` and `fetchConceptsForInstitution()` front-facing methods.
-	Returns a dict that can be assigned to an ObjectModel.'''
-def parseRawCall(raw_output, cutoff=0.5):
+	Returns a dict that can be assigned to an ObjectModel.
+	"""
 	dat = dict()
 	# If there is nothing to parse, don't parse it.
 	if 'concepts' not in raw_output.keys():
@@ -305,8 +327,8 @@ def parseRawCall(raw_output, cutoff=0.5):
 				dat[concept['concept']['label']] = concept['score']
 	return dat
 
-'''Helper function for saving a file. Not currently used.'''
 def saveFile(content, filename):
+	"""Helper function for saving a file. Not currently used."""
 	f = open(filename, 'w')
 	f.write(json.dumps(content, indent=4))
 	f.close()
