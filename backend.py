@@ -304,25 +304,28 @@ def fetchConceptsForInstitution(institution, token, cutoff=0.5):
 	if 'annotations' in _concept_node.keys() and len(_concept_node['annotations']) != 0:
 		_concept_node_title = _concept_node['annotations'][0]['concept']['label']
 		_related_concepts = event_insight_lib.fetchRelatedConcepts(_concept_node_title, token)
-		return parseRawCall(_related_concepts, cutoff)
+		return parseRawConceptCall(_related_concepts, cutoff)
 	# Otherwise, if the call was not successful, return a None flag.
 	else:
 		return None
 
-def fetchConceptsForEvents(event_string, token, cutoff=0.5):
+def fetchConceptsForEvent(event_string, token, cutoff=0.2):
 	"""
 	Returns the result of a Watson query against an event string.
 	Decorator for event_insight_lib.annotateText() that adds a cutoff parameter.
 	TODO: Test!
 	"""
-	return parseRawCall(event_insight_lib.annotateText(event_string, token), cutoff)
+	# return event_insight_lib.annotateText(event_string, token)
+	# return event_insight_lib.annotateText(event_string, token)['annotations'].keys()
+	# if 'annotations' in _concept_node.keys() and len(_concept_node['annotations']) != 0:
+	return parseRawEventCall(event_insight_lib.annotateText(event_string, token), cutoff)
 
-def parseRawCall(raw_output, cutoff=0.5):
+def parseRawConceptCall(raw_output, cutoff=0.5):
 	"""
-	Parses the raw results of a call to the IBM Watson API.
-	Implements a cutoff.
-	Implemented as the end step for the `fetchConceptsForEvents()` and `fetchConceptsForInstitution()` front-facing methods.
+	Parses the raw results of a call to the `label_search` IBM Watson API, implementing a cutoff in the process.
+	Used to parse the results for  the `fetchConceptsForInstitution()` front-facing method.
 	Returns a dict that can be assigned to an ObjectModel.
+	Minor semantic differences from `parseRawEventCall()`, below.
 	"""
 	dat = dict()
 	# If there is nothing to parse, don't parse it.
@@ -334,8 +337,25 @@ def parseRawCall(raw_output, cutoff=0.5):
 				dat[concept['concept']['label']] = concept['score']
 	return dat
 
+def parseRawEventCall(raw_output, cutoff=0.5):
+	"""
+	Parses the raw results of a call to the `label_search` IBM Watson API, implementing a cutoff in the process.
+	Used to parse the results for  the `fetchConceptsForEvent()` front-facing method.
+	Returns a dict that can be assigned to an ObjectModel.
+	Minor semantic differences from `parseRawConceptCall()`, above.
+	"""
+	dat = dict()
+	# If there is nothing to parse, don't parse it.
+	if 'annotations' not in raw_output.keys():
+		return dat
+	else:
+		for concept in raw_output['annotations']:
+			if concept['score'] >= cutoff:
+				dat[concept['concept']['label']] = concept['score']
+	return dat
+
 def saveFile(content, filename):
-	"""Helper function for saving a file. Not currently used."""
+	"""Helper function for saving a file."""
 	f = open(filename, 'w')
 	f.write(json.dumps(content, indent=4))
 	f.close()

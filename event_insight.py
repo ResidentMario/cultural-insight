@@ -15,16 +15,17 @@ def main():
 	# a.model = backend.fetchConceptsForInstitution('Smithsonian', token)
 	# print(a.model)
 	# a.saveModel()
+	print(backend.fetchConceptsForInstitution('Smithsonian', token))
 
 	# ConceptModel manipulation test.
-	a = backend.ConceptModel(None, 'testA')
-	a.model = {'C': 0.5, 'D': 0.8, 'E': 0.1}
-	b = backend.ConceptModel(None, 'testB')
-	b.model = {'A': 0.4, 'B': 0.7}
-	print(backend.addObjectToConceptModel(a, b).model)
-	a.model = {'A': 0.0}
-	b.model = {'B': 0.0}
-	print(backend.addObjectToConceptModel(a, b).model)
+	# a = backend.ConceptModel(None, 'testA')
+	# a.model = {'C': 0.5, 'D': 0.8, 'E': 0.1}
+	# b = backend.ConceptModel(None, 'testB')
+	# b.model = {'A': 0.4, 'B': 0.7}
+	# print(backend.addObjectToConceptModel(a, b).model)
+	# a.model = {'A': 0.0}
+	# b.model = {'B': 0.0}
+	# print(backend.addObjectToConceptModel(a, b).model)
 	
 	# ConceptModel comparison test.
 	# a = backend.ConceptModel(None, 'testA')

@@ -8,6 +8,7 @@ import json
 import os
 import requests
 from time import strftime, gmtime
+import urllib
 
 def importCredentials(filename='concept_insight_credentials.json'):
 	"""
@@ -64,10 +65,12 @@ def validateToken(tokenfile='token.json'):
 		return False
 
 def getToken(tokenfile='token.json'):
-	"""This is the primary-use access method meant to be used throughout the application.
-		Implements `validateToken()` and `generateToken()` submethods, above.
-		If a token exists that was created within the current hour, it is still valid, reused, and returned (fast).
-		If a token exists but has expired, or does not exist at all, one is created and returned (requires networking, slower)."""
+	"""
+	This is the primary-use access method meant to be used throughout the application.
+	Implements `validateToken()` and `generateToken()` submethods, above.
+	If a token exists that was created within the current hour, it is still valid, reused, and returned (fast).
+	If a token exists but has expired, or does not exist at all, one is created and returned (requires networking, slower).
+	"""
 	if validateToken():
 		return json.load(open(tokenfile))['token']
 	else:
@@ -75,10 +78,11 @@ def getToken(tokenfile='token.json'):
 
 def annotateText(text, token, content_type = 'text/plain'):
 	"""
-	Given the text to be analyzed and a previous generated access token this method returns the result of an API call to the `annotate_text` Watson method.
+	Given the text to be analyzed and a previous generated access token this method returns the result of a Watson API call to `annotate_text`.
 	This method forms the core of this library's functionality.
 	This method accepts one optional parameter: `content_type`. This defaults to `text/plain`, which expects plaintext input.
 	`text/html` is the alternative option.
+	NOTE: This is a raw method that returns the raw, unprocessed result of an API call. All processing afterwards is handled by `backend.py`.
 	"""
 	base_url='https://gateway.watsonplatform.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/annotate_text'
 	headers = {'X-Watson-Authorization-Token': token, 'Content-Type': content_type, 'Accept': 'application/json'}
@@ -97,6 +101,7 @@ def fetchRelatedConcepts(concept, token, level=0, limit=10):
 	1 is default, 0 is broadest, anything down to 5 is more specific and/or technical.
 	We use 0 as a preset.
 	Limit controls the maximum number of concepts that will be returned. Note that fewer than the limited number may be returned.
+	NOTE: This is a raw method that returns the raw, unprocessed result of an API call. All processing afterwards is handled by `backend.py`.
 	"""
 	headers = {'X-Watson-Authorization-Token': token, 'Content-Type': 'text/plain', 'Accept': 'application/json'}
 	# Percent encode the URI according to Wikipedia's encoding scheme.

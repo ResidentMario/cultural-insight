@@ -42,6 +42,7 @@ The `/templates` and `/static` folders contain the resources (HTML, CSS, SVG, et
     "events": [
         {
             "name": "Name",
+            "description": "Long description...",
 		    "start-time": [
     		    2015,
  		       	11,
