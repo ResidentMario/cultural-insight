@@ -80,7 +80,7 @@ def emailAlreadyInUse(new_email, filename='accounts.json'):
 
 '''Adds an email to the accounts file.
 	The interests field is a dummy variable, for now. It is expected to be a list of three to ten elements.
-	TODO: Thread Concept Insights through the inputted interests (see `conceptualize`), splice together an early model, and log that.'''
+	TODO: Thread Concept Insights through the inputted interests (see `conceptualize()`), splice together an early model, and log that.'''
 def addNewUser(new_user_email, new_user_password, new_user_institutions_list, filename='accounts.json'):
 	# Open the JSON file.
 	if filename in [f for f in os.listdir('.') if os.path.isfile(f)]:
@@ -90,8 +90,9 @@ def addNewUser(new_user_email, new_user_password, new_user_institutions_list, fi
 	# Append the new user.
 	user_data['accounts'].append({'email': new_user_email, 'password': new_user_password, 'model': concept_model})
 	# Re-encode and save the modified file.
-	with open(filename, 'w') as outfile:
-		json.dump(user_data, outfile)
+	saveFile(user_data, filename)
+	# with open(filename, 'w') as outfile:
+	# 	json.dump(user_data, outfile)
 
 '''Authenticates a user's email-password combination.'''
 def authenticateUser(email, password, filename='accounts.json'):
@@ -180,28 +181,46 @@ class ConceptModel:
 		with open(filename, 'w') as outfile:
 			json.dump(data, outfile)
 
+'''Font-facing method, which called from app.py, handles all of the work of registering a user.
+	Takes as a parameter the name of the user, their password, and a list consisting of all of the institutions to be assigned.
+	NOTE: This is the method that is called by the webapp as the final step of the registration process.'''
+def addNewUser(user_email, user_password, user_institutions_list, token, filename='accounts.json'):
+	# user = ConceptModel()
+	# user.model = conceptualize(user_institutions_list, token)
+	# user.model = conceptualize(user_institutions_list, token)
+	# user.email = user_email
+	# user.saveModel()
+	# return user
+	user = ConceptModel()
+	user.model = conceptualize(user_institutions_list, token)
+	user.email = user_email
+	data = json.load(open(filename))
+	data['accounts'].append(
+        {
+            "password": user_password,
+            "model": {
+                "concepts": user.model,
+                "maturity": 1
+            },
+            "email": user_email
+        })
+	# Re-encode and save the modified file.
+	with open(filename, 'w') as outfile:
+		json.dump(data, outfile, indent=4)
+	return user.model
+
 '''A method which atomizes a given list of institutions and turns them into a ranked list of concepts.
 	Called by the `addNewUser()` front-end method.
-	Implements `addObjectToConceptModel()`.
-	Implements `getWikipediaArticleLead()`.
-	Implements `event_insight_lib.annotateText()`.
-	Returns a ConceptModel.model sub-object dictionary.
-	TODO: Implement!'''
-def conceptualize(list_of_things):
-	dat = dict()
-	for thing in list_of_things:
-		pass
-	return dict()
-
-'''Test method to be built out. Will replace the above, once done.'''
-def conceptualize2(list_of_things, token, cutoff=0.5):
+	Implements `fetchConceptsForInstitution()` and `addObjectToConceptModel()`.
+	Returns a ConceptModel.model sub-object dictionary.'''
+def conceptualize(list_of_things, token, cutoff=0.5):
 	dat = ConceptModel()
 	for thing in list_of_things:
 		new = ConceptModel()
 		new.model = fetchConceptsForInstitution(thing, token)
 		# If a new model fails definition it will return a None flag.
 		# This signals to this method that it shouldn't bother trying to merge the one into the other, since there's nothing to merge.
-		if new.model != None:
+		if new.model != dict() and new.model != None:
 			dat = addObjectToConceptModel(dat, new)
 	return dat.model
 
@@ -220,7 +239,7 @@ def addObjectToConceptModel(base_concept_model, merger_concept_model):
 	mK = sorted(merger_concept_model.model.keys())
 	for pair in itertools.zip_longest(bK, mK, fillvalue=None):
 		if pair[0] == pair[1]:
-			new_concept_model += { pair[0]: round((bK[pair[0]]*base_concept_model.maturity + mK[pair[0]]*merger_concept_model.maturity)/new_concept_model.maturity,3) }
+			new_concept_model += { pair[0]: round((bK[int(pair[0])]*base_concept_model.maturity + mK[int(pair[0])]*merger_concept_model.maturity)/new_concept_model.maturity,3) }
 		else:
 			if pair[0] != None:
 				new_concept_model.model.update({ pair[0]: round(base_concept_model.model[pair[0]]*base_concept_model.maturity/new_concept_model.maturity,3) })

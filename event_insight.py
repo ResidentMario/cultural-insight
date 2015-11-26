@@ -17,14 +17,14 @@ def main():
 	# a.saveModel()
 
 	# ConceptModel manipulation test.
-	# a = backend.ConceptModel(None, 'testA')
-	# a.model = {'C': 0.5, 'D': 0.8, 'E': 0.1}
-	# b = backend.ConceptModel(None, 'testB')
-	# b.model = {'A': 0.4, 'B': 0.7}
-	# print(backend.addObjectToConceptModel(a, b))
-	# a.model = {'A': 0.0}
-	# b.model = {'B': 0.0}
-	# print(backend.addObjectToConceptModel(a, b))
+	a = backend.ConceptModel(None, 'testA')
+	a.model = {'C': 0.5, 'D': 0.8, 'E': 0.1}
+	b = backend.ConceptModel(None, 'testB')
+	b.model = {'A': 0.4, 'B': 0.7}
+	print(backend.addObjectToConceptModel(a, b).model)
+	a.model = {'A': 0.0}
+	b.model = {'B': 0.0}
+	print(backend.addObjectToConceptModel(a, b).model)
 	
 	# ConceptModel comparison test.
 	# a = backend.ConceptModel(None, 'testA')
@@ -46,10 +46,13 @@ def main():
 	# print(backend.fetchConceptsForInstitution('Intrepid Museum', token, cutoff=0.2))
 	# print(urllib.parse.quote('Intrepid Air & Space Museum'.encode("utf8")))
 	# print(urllib.parse.quote('Intrepid Sea, Air & Space Museum'.replace(' ', '_'), safe='_,'))
+	# c = ['Smithsonian Institute', 'Intrepid Sea, Air & Space Museum', 'Rubin Museum']
+	# r = backend.conceptualize2(c, token)
+	# print(r)
 
-	c = ['Smithsonian Institute', 'Intrepid Sea, Air & Space Museum', 'Rubin Museum']
-	r = backend.conceptualize2(c, token)
-	print(r)
+	# User definition test.
+	# a = backend.addNewUser('test3@baruchmail.cuny.edu', 'Random', ['Smithsonian Institute', 'Rubin Museum'], token)
+	# print(a.model)
 
 if __name__ == "__main__":
     main()

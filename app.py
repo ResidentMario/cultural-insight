@@ -18,6 +18,7 @@ from flask import flash
 # My own libraries.
 import forms
 import backend
+import event_insight_lib
 
 # Declarative.
 app = Flask(__name__)
@@ -101,9 +102,11 @@ def start():
 				# TODO: To support other email addresses we can use the flask-wtf validate email subroutine.
 			else:
 				# Now we have the data, contained in request.form['password'], email, i1, ..., i10. We have to process it somehow.
-				backend.addNewUser(request.form['email'], request.form['password'], [request.form['i1'], request.form['i2'],
-				 request.form['i3'], request.form['i4'], request.form['i5'], request.form['i6'], request.form['i7'], request.form['i8'],
-				 request.form['i9'], request.form['i10']])
+				backend.addNewUser(request.form['email'], request.form['password'], [request.form['i1'], request.form['i2'], request.form['i3'], request.form['i4'], request.form['i5']], event_insight_lib.getToken())
+				user = User()
+				email = request.form['email']
+				user.id = email
+				flask_login.login_user(user)
 				flash('Your account was successfully registered.')
 				return render_template('registered.html')
 		else:
@@ -159,5 +162,5 @@ def dashboard():
 ###################################
 port = os.getenv('VCAP_APP_PORT', '5000')
 if __name__ == "__main__":
-	# app.run(host='0.0.0.0', port=int(port), debug=True)
-	app.run(host='0.0.0.0', port=int(port))
+	app.run(host='0.0.0.0', port=int(port), debug=True)
+	# app.run(host='0.0.0.0', port=int(port))
