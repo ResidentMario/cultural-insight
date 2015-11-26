@@ -12,60 +12,6 @@ import requests
 # My own libraries.
 import event_insight_lib
 
-##################
-# SENDGRID/EMAIL #
-##################
-# SendGrid is IBM's technology solution partner for email services.
-# The methods that follow are based on the SendGrid Pythonic API (https://github.com/sendgrid/sendgrid-python).
-
-import sendgrid
-
-# SendGrid secret key.
-api_key = None
-
-def fetchSendGridKey(filename='sendgrid_key.json'):
-	"""Loads the SendGrid secret key from its JSON storage file. Called by `generateEmail()`, and by `sendEmail()` from there."""
-	return json.load(open(filename))['api_key']
-
-def generateEmail(subject, content):
-	"""
-	Generates a sendgrid.Mail() object containing the given subject and content.
-	Returns the object.
-	"""
-	message = sendgrid.Mail()
-	message.set_subject(subject)
-	message.set_html(content)
-	# Note: to get only the subject use .subject, to get only the body use ??? .content is a dict, need to do a bit of plumbing.
-	# The SendGrid API doesn't have any getter methods?
-	return message
-
-def sendEmail(_to, _from, subject, content):
-	"""Generic email template, implemented using the SendGrid emailer service. Extended by application-specific methods."""
-	# Fetch the SendGrid key from the hidden JSON keyfile, if it has not been defined already.
-	if api_key == None:
-		api_key = fetchSendGridKey()
-	sg = sendgrid.SendGridClient(api_key)
-	message = generateEmail(subject, content)
-	message.add_to(_to)
-	message.set_from(_from)
-	chk = sg.send(message)
-	# The SendGrid send method returns a tuple (http_status_code, message) that I return here for debugging purposes.
-	return chk
-
-def iterEmails(filename='accounts.json'):
-	"""
-	Returns a user email iterator. Used by the email script.
-	Should I be using an iterator? It's not neccessary, probably, but I need to use a little bit of flair, for practice. :)
-	NOTE: Untested.
-	"""
-	if filename in [f for f in os.listdir('.') if os.path.isfile(f)]:
-		user_data = json.load(open(filename))
-	yield user_data['email']
-
-######################
-# END SENDGRID/EMAIL #
-######################
-
 #############
 # INTERFACE #
 #############
@@ -97,8 +43,6 @@ def addNewUser(new_user_email, new_user_password, new_user_institutions_list, fi
 	user_data['accounts'].append({'email': new_user_email, 'password': new_user_password, 'model': concept_model})
 	# Re-encode and save the modified file.
 	saveFile(user_data, filename)
-	# with open(filename, 'w') as outfile:
-	# 	json.dump(user_data, outfile)
 
 def authenticateUser(email, password, filename='accounts.json'):
 	"""Authenticates a user's email-password combination."""

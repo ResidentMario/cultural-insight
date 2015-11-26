@@ -120,7 +120,7 @@ The `/templates` and `/static` folders contain the resources (HTML, CSS, SVG, et
 
 ##To do
 
-Define methods for `events.json`. Write the curation tool, `curator.py`.
+Populate an example list of events, using `curator.py`.
 
 Write `emailer.py`.
 
