@@ -140,7 +140,7 @@ def dashboard():
 	"""DASHBOARD: This is where all of the user account controls live."""
 	form = forms.DashboardForm(csrf_enabled=False)
 	if request.method == 'GET':
-		return render_template('dashboard.html', form=form)
+		return render_template('dashboard.html', form=form, concepts=backend.getConceptsByID('test@baruchmail.cuny.edu'))
 	if request.method == 'POST':
 		if request.form['email']:
 			backend.changeEmail(flask_login.current_user.get_id(), request.form['email'])

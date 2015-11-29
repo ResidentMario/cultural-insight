@@ -15,7 +15,7 @@ def main():
 	# a.model = backend.fetchConceptsForInstitution('Smithsonian', token)
 	# print(a.model)
 	# a.saveModel()
-	print(backend.fetchConceptsForInstitution('Smithsonian', token))
+	# print(backend.fetchConceptsForInstitution('Smithsonian', token))
 
 	# ConceptModel manipulation test.
 	# a = backend.ConceptModel(None, 'testA')
@@ -54,6 +54,11 @@ def main():
 	# User definition test.
 	# a = backend.addNewUser('test3@baruchmail.cuny.edu', 'Random', ['Smithsonian Institute', 'Rubin Museum'], token)
 	# print(a.model)
+
+	# Concept display test.
+	concepts = backend.getConceptsByID('test@baruchmail.cuny.edu')
+	for concept in concepts:
+		print(concept + str(concepts[concept]))
 
 if __name__ == "__main__":
     main()

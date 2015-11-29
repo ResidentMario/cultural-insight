@@ -1,5 +1,7 @@
 ##About
-The Cultural Insight tool is a web-based Bluemix-hosted cultural engagement tool. Users of the web portal are able to sign up for a weekly email service which sends them a shortlist of events happening in New York City that, based on a model of that user's interests, they would be interested in attending. The recommendation engine is implemented in Python using the Concept Insight IBM Watson tool; the webservice is implemented in Python Flask. The idea behind this application is that it will funnel the vast amount of information thrown at those that live in the city down to a core of causes that they care about, increasing their engagement by surfacing events that they are actually interested in attending.
+The Cultural Insight tool is a web-based Bluemix-hosted cultural engagement tool. Users of the web portal are able to find events happening in New York City which, based on a model of that user's interests, they would be interested in attending. The recommendation engine is implemented in Python using the Concept Insight IBM Watson tool; the webservice is implemented in Python Flask. The idea behind this application is that it will funnel the vast amount of information thrown at those that live in the city down to a core of causes that they care about, increasing their engagement by surfacing events that they are actually interested in attending.
+
+A stretch goal is to implement this service via a weekly email send to users, so that they do not have to log into this application to use it.
 
 ##Structure of the application
 **Procfile** - This command is run whenever the application is restarted on Bluemix. In our case it runs `app.py`, which defines this system's webservice.
@@ -31,7 +33,7 @@ The `/templates` and `/static` folders contain the resources (HTML, CSS, SVG, et
 
 **curator.py** - This administrative script is used in the command line for defining the events that make up this application's event library. It is designed for use by a master "content curator".
 
-**emailer.py** - This script executes the weekly emailings. It should be scheduled as a chron job.
+**emailer.py** - This script executes the weekly emailings. It should be scheduled as a chron job. Not currently in active development (this is a stretch goal).
 
 **accounts.json** - Stores the account information. Interacts with the web-app.
 
@@ -120,10 +122,12 @@ The `/templates` and `/static` folders contain the resources (HTML, CSS, SVG, et
 
 ##To do
 
+Create a utility for inputing further interests in the dashboard.
+
 Populate an example list of events, using `curator.py`.
 
-Write `emailer.py`.
+Create a page for viewing results.
 
-Write concept interaction into the emails.
+Write in capacity for interacting with results into the viewer.
 
-Finish up the web-application: concept display and account credential changes.
+Stretch goal: Write `emailer.py`.

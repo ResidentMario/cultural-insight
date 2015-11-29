@@ -11,9 +11,7 @@
   {% if current_user.is_authenticated %}
 
 
-  <p>Welcome to the account dashboard. Here you can change your email, change your password, or delete your account entirely.</p>
-
-  <p>You can also view the concepts which Cultural Insights has associated with your account thus far.</p>
+  <p>Welcome to the account dashboard. Here you can change your email, change your password, view and interact with concepts associated with your account, and even delete your account entirely.</p>
  
   <h3>Account</h3>
     <form method="POST" action="/dashboard.html">
@@ -35,9 +33,18 @@
       </table>
     </form>
 
-  <h3>Concepts</h3>
-  <p>As of now, the following concepts are associated with your account:</p>
+  <h3>Interests</h3>
+  <p>Help improve the results that we give you by providing more information about yourself here!</p>
 
+  <h3>Concepts</h3>
+  <p>As of now, the following concepts are associated with your account. To further evolve this model, try giving us some more information about yourself in the pane above!</p>
+
+  {% for concept in concepts %}
+    <span class="concept-box" style="border:1px solid #668cff; background:#e5ecff; box-shadow: 1px 1px 1px #668cff; width:auto; padding:10px;">
+      <span style="font-weight:bold">{{ concept }}</span>&mdash;{{ concepts[concept] }} <!--<span style="font-size:10px; padding-left:10px; color:#001b66; font-weight:bold">(x)</span>-->
+    </span>
+    <br/><br/>
+  {% endfor %}
 
   <table style="width:100%; text-align:center">
     <tr>

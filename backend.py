@@ -116,9 +116,9 @@ class ConceptModel:
 	model = dict()
 	email = ''
 
-	def __init__(self, _model=dict(), _email=''):
-		self.loadModel(_email)
-		self.email = _email
+	def __init__(self, _model=dict(), email=''):
+		self.loadModel(email)
+		self.email = email
 
 	def loadModel(self, email, filename='accounts.json'):
 		"""Given the email of a registered user, loads a single user's model out of the accounts list."""
@@ -259,9 +259,6 @@ def fetchConceptsForEvent(event_string, token, cutoff=0.2):
 	Decorator for event_insight_lib.annotateText() that adds a cutoff parameter.
 	TODO: Test!
 	"""
-	# return event_insight_lib.annotateText(event_string, token)
-	# return event_insight_lib.annotateText(event_string, token)['annotations'].keys()
-	# if 'annotations' in _concept_node.keys() and len(_concept_node['annotations']) != 0:
 	return parseRawEventCall(event_insight_lib.annotateText(event_string, token), cutoff)
 
 def parseRawConceptCall(raw_output, cutoff=0.5):
@@ -297,6 +294,25 @@ def parseRawEventCall(raw_output, cutoff=0.5):
 			if concept['score'] >= cutoff:
 				dat[concept['concept']['label']] = concept['score']
 	return dat
+
+def deleteConcept(concept, concept_dict):
+	"""
+	Deletes the entry for a concept in the given concept model dictionary, and returns the result.
+	If the entry is not present, the dictionary is just returned.
+	Used by the front-end dashboard for managing concepts associated with your account.
+	"""
+	if concept in concept_dict.keys():
+		del concept_dict[concept]
+	return concept_dict
+
+def getConceptsByID(user_email):
+	"""
+	Returns the (concept, confidence) tuples for the concepts associated with a certain email account.
+	"""
+	return ConceptModel(email=user_email).model
+
+def test(_list):
+	yield _list
 
 def saveFile(content, filename):
 	"""Helper function for saving a file."""
