@@ -21,5 +21,10 @@ class LoginForm(Form):
     password = PasswordField('Password', validators=[Required()])
 
 class DashboardForm(Form):
-    email = TextField('Email', validators=[Required(), Email()])
-    password = PasswordField('Password', validators=[Required()])
+    email = TextField('Email', validators=[Email()])
+    password = PasswordField('Password')
+    i1 = TextField('i1')
+    i2 = TextField('i2')
+    i3 = TextField('i3')
+    i4 = TextField('i4')
+    i5 = TextField('i5')

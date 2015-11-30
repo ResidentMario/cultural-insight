@@ -15,7 +15,6 @@ from flask import flash
 # My own libraries.
 import forms
 import backend
-import event_insight_lib
 
 # Declarative.
 app = Flask(__name__)
@@ -135,18 +134,34 @@ def logout():
 	flash('You were successfully logged out.')
 	return redirect('/')
 
+@app.route('/suggestion.html')
+def suggest():
+	"""SUGGESTIONS: This is where the user views and interacts with suggested events and exhibitions."""
+	return render_template('suggestion.html', event=backend.getBestConceptModelByID(flask_login.current_user.get_id()))
+
 @app.route('/dashboard.html', methods=['GET', 'POST'])
 def dashboard():
 	"""DASHBOARD: This is where all of the user account controls live."""
 	form = forms.DashboardForm(csrf_enabled=False)
 	if request.method == 'GET':
-		return render_template('dashboard.html', form=form, concepts=backend.getConceptsByID('test@baruchmail.cuny.edu'))
+		return render_template('dashboard.html', form=form, concepts=backend.getConceptsByID(flask_login.current_user.get_id()))
 	if request.method == 'POST':
 		if request.form['email']:
 			backend.changeEmail(flask_login.current_user.get_id(), request.form['email'])
 		if request.form['password']:
 			backend.changePassword(flask_login.current_user.get_id(), request.form['password'])
-		flash('Your changes have been applied. You may now log back in again.')
+		if request.form['i1']:
+			# This method is flagged to return False when the operation fails.
+			# This occurs when the raw input the user provides is not good enough to resolve to a particular concept.
+			# In that case, return an error message indicating this fact.
+			flag = backend.addConceptsToID(flask_login.current_user.get_id(), [request.form['i1']])
+			if flag == False:
+				return render_template('dashboard.html', error='Error: The input you provided could not be resolved.', form=form)
+		# if request.form['i2']:
+		#	backend.addConceptsToID(flask_login.current_user.get_id(), [request.form['i2']])
+		# if request.form['i3']:
+		#	backend.addConceptsToID(flask_login.current_user.get_id(), [request.form['i3']])			
+		flash('Your changes have been applied.')
 		return render_template('dashboard.html', form=form)
 
 #############
@@ -161,5 +176,5 @@ def dashboard():
 ###################################
 port = os.getenv('VCAP_APP_PORT', '5000')
 if __name__ == "__main__":
-	# app.run(host='0.0.0.0', port=int(port), debug=True)
-	app.run(host='0.0.0.0', port=int(port))
+	app.run(host='0.0.0.0', port=int(port), debug=True)
+	# app.run(host='0.0.0.0', port=int(port))

@@ -1,0 +1,43 @@
+{% extends "frame.html" %}
+{% block pagetitle %} Suggestions—Cultural Insight {% endblock %}
+{% block content %}
+
+<div id="error-message">{{ error }}</div>
+
+{% if current_user.is_authenticated %}
+
+	<div style="text-align:left;">
+    	<!-- <h2>Suggestions</h2> -->
+
+    	<h2>We suggest:</h2>
+
+    	<div id="event-box">
+    	<h3>{{ event.model['name'] }}</h3>
+
+    	Description:
+    	{{ event.model['description'] }}
+
+	<table style="width:100%; text-align:center; margin-top:20px;">
+    	<tr>
+    	  <td style="width:45%">
+        	<div id="event-button">
+         	 	<a href="{{ event.model['url']}}">Learn more!</a>
+        	</div>
+	      </td>
+    	  <td style="width:45%">
+       		<div id="event-button">
+        	  <a href="">I'm not interested.</a>
+        	</div>
+      	  </td>
+    	</tr>
+  	</table>
+
+    	</div>
+
+  {% else %}
+
+  You're browsing anonymously! You must <a href="/login.html">log in</a> before you can access your suggestions.
+    
+  {% endif %}
+
+{% endblock %}

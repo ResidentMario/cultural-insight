@@ -79,6 +79,22 @@
 	margin:auto;
 	font-style:italic;
 }
+#event-box {
+	border:1px solid #668cff;
+	background:#e5ecff;
+	padding:20px;
+	padding-top:0px;
+	border-radius:5px;
+}
+#event-button {
+	font-size:18px;
+	font-weight:bold;
+	color:#00154d;
+	background:#b3c5ff;
+	padding:5px;
+	border:1px solid #668cff;
+	box-shadow: 1px 1px #ccdaff;
+}
 input {
 	font-size:14px;
 	padding:4px 6px 4px 6px;

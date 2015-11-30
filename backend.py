@@ -137,7 +137,7 @@ class ConceptModel:
 				break
 		# Re-encode and save the modified file.
 		with open(filename, 'w') as outfile:
-			json.dump(data, outfile)
+			json.dump(data, outfile, indent=4)
 
 def getToken(tokenfile='token.json'):
 	"""
@@ -154,6 +154,7 @@ def addNewUser(user_email, user_password, user_institutions_list, token, filenam
 	"""
 	user = ConceptModel()
 	user.model = conceptualize(user_institutions_list, token)
+	user.model = remean(user.model)
 	user.email = user_email
 	data = json.load(open(filename))
 	data['accounts'].append(
@@ -174,13 +175,13 @@ def conceptualize(list_of_things, token, cutoff=0.5):
 	"""
 	A method which atomizes a given list of institutions and turns them into a ranked list of concepts.
 	Called by the `addNewUser()` front-end method.
-	Implements `fetchConceptsForInstitution()` and `addObjectToConceptModel()`.
+	Implements `fetchConceptsForUserConcept()` and `addObjectToConceptModel()`.
 	Returns a ConceptModel.model sub-object dictionary.
 	"""
 	dat = ConceptModel()
 	for thing in list_of_things:
 		new = ConceptModel()
-		new.model = fetchConceptsForInstitution(thing, token)
+		new.model = fetchConceptsForUserConcept(thing, token)
 		# If a new model fails definition it will return a None flag.
 		# This signals to this method that it shouldn't bother trying to merge the one into the other, since there's nothing to merge.
 		if new.model != dict() and new.model != None:
@@ -195,7 +196,7 @@ def addObjectToConceptModel(base_concept_model, merger_concept_model):
 	TODO: Tweak math a little bit to account for the number of objects being merged in.
 	Returns the merged ConceptModel object.
 	"""
-	new_concept_model = ConceptModel()
+	new_concept_model = ConceptModel(email=base_concept_model.email)
 	new_list = []
 	# Increment the maturity of the model.
 	new_concept_model.maturity = base_concept_model.maturity + merger_concept_model.maturity
@@ -233,13 +234,11 @@ def compareConceptModels(first_concept_model, second_concept_model):
 	else:
 		return round((overlap/num)/min(len(first_concept_model.model),len(second_concept_model.model)),3)
 
-def fetchConceptsForInstitution(institution, token, cutoff=0.5):
+def fetchConceptsForUserConcept(institution, token, cutoff=0.5):
 	"""
-	Given the name of an institution and an access token this function returns the dictionary model for the given cultural institution.
+	Given a user-defined concept name and an access token this function returns the dictionary model for the given raw concept.
 	This method is called as a part of processing on user input during registration.
-	The top-scoring result of a call to annotateText *should*, in ordinary cases, correspond with the article-name of the institution.
-	CRITICAL: This is simply *not* very robust! For now we have to ask that users try to hew as closely as possible to the official names
-	of the institutions they are entering. Otherwise their results are discarded.
+	The top-scoring result of a call to annotateText *should*, in ordinary cases, correspond with the article-name of the concept.
 	This result is then run through event_insight_lib.fetchRelatedConcepts().
 	"""
 	# Fetch the precise name of the node (article title) associated with the institution.
@@ -264,7 +263,7 @@ def fetchConceptsForEvent(event_string, token, cutoff=0.2):
 def parseRawConceptCall(raw_output, cutoff=0.5):
 	"""
 	Parses the raw results of a call to the `label_search` IBM Watson API, implementing a cutoff in the process.
-	Used to parse the results for  the `fetchConceptsForInstitution()` front-facing method.
+	Used to parse the results for  the `fetchConceptsForUserConcept()` front-facing method.
 	Returns a dict that can be assigned to an ObjectModel.
 	Minor semantic differences from `parseRawEventCall()`, below.
 	"""
@@ -311,8 +310,62 @@ def getConceptsByID(user_email):
 	"""
 	return ConceptModel(email=user_email).model
 
-def test(_list):
-	yield _list
+def addConceptsToID(user_email, concept_list, filename='accounts.json'):
+	"""
+	Font-facing method called from app.py by users adding further concepts to their models.
+	Takes as a parameter the email of the user and a list of concepts to be assigned.
+	This function returns a True flag if the operation was completed successfully.
+	It returns a False flag if the operation failed: this happens when the text the user provides is not successfully matched up with any
+	concepts in Watson's Wikipedia graph.
+	"""
+	new_concept_model = ConceptModel()
+	token = getToken()
+	new_concept_model.model = conceptualize(concept_list, token)
+	if new_concept_model.model != None and new_concept_model.model != dict():
+		user = ConceptModel(email=user_email)
+		user = addObjectToConceptModel(user, new_concept_model)
+		user.model = remean(user.model, mean=0.5)
+		user.saveModel()
+		return True
+	else:
+		return False
+
+def remean(concept_list, mean=0.5):
+	"""
+	Analytical method.
+	Rebalances the values in the given concept list around the given mean.
+	"""
+	keys = concept_list.keys()
+	size = len(keys)
+	if size == 0:
+		return concept_list
+	total = 0
+	for key in keys:
+		total += concept_list[key]
+	current_mean = total/size
+	for key in keys:
+		concept_list[key] += round((mean - current_mean), 3)
+	return concept_list
+
+def getBestConceptModelByID(email):
+	"""
+	Given a user's email ID, returns the event in the events database that best matches their interests.
+	"""
+	best_comparison = 0
+	best_event = dict()
+	model = ConceptModel(email)
+	if 'events.json' in [f for f in os.listdir('.') if os.path.isfile(f)]:
+		list_of_events = json.load(open('events.json'))['events']
+	for event in list_of_events:
+		c = ConceptModel()
+		c.model = event['model']['concepts']
+		overlap = compareConceptModels(c, model)
+		if overlap >= best_comparison:
+			best_comparison = overlap
+			best_event = event
+	ret = ConceptModel('email')
+	ret.model = best_event
+	return ret
 
 def saveFile(content, filename):
 	"""Helper function for saving a file."""

@@ -12,10 +12,10 @@ def main():
 
 	# ConceptModel definition test.
 	# a = backend.ConceptModel([], 'test@baruchmail.cuny.edu')
-	# a.model = backend.fetchConceptsForInstitution('Smithsonian', token)
+	# a.model = backend.fetchConceptsForUserConcept('Smithsonian', token)
 	# print(a.model)
 	# a.saveModel()
-	# print(backend.fetchConceptsForInstitution('Smithsonian', token))
+	# print(backend.fetchConceptsForUserConcept('Smithsonian', token))
 
 	# ConceptModel manipulation test.
 	# a = backend.ConceptModel(None, 'testA')
@@ -36,7 +36,7 @@ def main():
 
 	# Watson API plug-in test.
 	# a = backend.ConceptModel([], 'test@baruchmail.cuny.edu')
-	# a.model = backend.parseRawCall(backend.fetchConceptsForInstitution('Smithsonian', token))
+	# a.model = backend.parseRawCall(backend.fetchConceptsForUserConcept('Smithsonian', token))
 	# print(a.model)
 	# b = backend.ConceptModel([], 'test@baruchmail.cuny.edu')
 	# b.model = {'test': 0.98}
@@ -44,7 +44,7 @@ def main():
 	# print(a.model)
 
 	# Conceptualization test.
-	# print(backend.fetchConceptsForInstitution('Intrepid Museum', token, cutoff=0.2))
+	# print(backend.fetchConceptsForUserConcept('Intrepid Museum', token, cutoff=0.2))
 	# print(urllib.parse.quote('Intrepid Air & Space Museum'.encode("utf8")))
 	# print(urllib.parse.quote('Intrepid Sea, Air & Space Museum'.replace(' ', '_'), safe='_,'))
 	# c = ['Smithsonian Institute', 'Intrepid Sea, Air & Space Museum', 'Rubin Museum']
@@ -56,9 +56,50 @@ def main():
 	# print(a.model)
 
 	# Concept display test.
-	concepts = backend.getConceptsByID('test@baruchmail.cuny.edu')
-	for concept in concepts:
-		print(concept + str(concepts[concept]))
+	# concepts = backend.getConceptsByID('test@baruchmail.cuny.edu')
+	# for concept in concepts:
+	#	print(concept + str(concepts[concept]))
+
+	# Concept self-add test.
+	# backend.addConceptsToID('test@baruchmail.cuny.edu', ['Taoism', 'Buddhism'])
+	# backend.addConceptsToID('test@baruchmail.cuny.edu', ['Test', 'Buddhism'])
+	# print(to_be_added)
+	# user.saveModel(to_be_added)
+
+	# Remean test.
+	'''a = backend.remean({
+                    "Abstract expressionism": 0.021,
+                    "India": 0.024,
+                    "Vedas": 0.015,
+                    "Hinduism": 0.015,
+                    "Vishnu": 0.015,
+                    "United States Capitol": 0.018,
+                    "List of Deshastha Brahmin surnames": 0.013,
+                    "Museum of Modern Art": 0.017,
+                    "Bronze": 0.022,
+                    "Shiva": 0.013,
+                    "List of districts of India": 0.017,
+                    "List of districts in India by population": 0.021,
+                    "Administrative divisions of India": 0.017,
+                    "Smithsonian Institution": 0.031,
+                    "Krishna": 0.015,
+                    "Western painting": 0.018,
+                    "Vaishnavism": 0.015,
+                    "United States Department of the Interior": 0.021,
+                    "List of railway stations in India": 0.018,
+                    "Art Institute of Chicago": 0.02,
+                    "History of painting": 0.018,
+                    "Mahabharata": 0.013,
+                    "List of cities and towns in India": 0.019,
+                    "Glossary of Hinduism terms": 0.015,
+                    "Rama": 0.014,
+                    "National Gallery of Art": 0.022
+                })
+	print(a)'''
+
+	# Best event finder test.
+	e = backend.getBestConceptModelByID('test@baruchmail.cuny.edu')
+	print(str(e))
 
 if __name__ == "__main__":
     main()

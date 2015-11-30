@@ -2,6 +2,7 @@
 {% block pagetitle %} Account Dashboard—Cultural Insight {% endblock %}
 {% block content %}
 
+    <div id="error-message">{{ error }}</div>
 	
 <div style="text-align:left;">
   <h2>Account Dashboard</h2>
@@ -9,7 +10,6 @@
   <img src="/static/images/cultural-insight.svg" style="height:200px; float:right; margin-left:25px;"/>
 
   {% if current_user.is_authenticated %}
-
 
   <p>Welcome to the account dashboard. Here you can change your email, change your password, view and interact with concepts associated with your account, and even delete your account entirely.</p>
  
@@ -31,13 +31,32 @@
           <td><div id="dashboard-delete-button">Delete</div></td>
         </tr>
       </table>
+
+      <h3>Interests</h3>
+        <p>You can improve the results that we give you by feeding us more things that interest you here. The system continuously refines itself every time you express interest in an event; on the other hand, by inputting that information directly here, you are better able to direct the output that we will give you, if you so desire.</p>
+
+        <table style="width:500px">
+          <tr>
+            <td id="form-dashboard-options">New Interest</td>
+            <td>{{ form.i1 }}</td>
+            <td><input id="submit-button" type="submit" value="Update"/></td>
+          </tr>
+          <!--<tr>
+            <td id="form-dashboard-options">New Interest</td>
+            <td>{{ form.i2 }}</td>
+            <td><input id="submit-button" type="submit" value="Update"/></td>
+          </tr>
+          <tr>
+            <td id="form-dashboard-options">New Interest</td>
+            <td>{{ form.i3 }}</td>
+            <td><input id="submit-button" type="submit" value="Update"/></td>
+          </tr>-->
+        </table>
+
     </form>
 
-  <h3>Interests</h3>
-  <p>Help improve the results that we give you by providing more information about yourself here!</p>
-
   <h3>Concepts</h3>
-  <p>As of now, the following concepts are associated with your account. To further evolve this model, try giving us some more information about yourself in the pane above!</p>
+  <p>As of now, the following concepts are associated with your account:</p><br/>
 
   {% for concept in concepts %}
     <span class="concept-box" style="border:1px solid #668cff; background:#e5ecff; box-shadow: 1px 1px 1px #668cff; width:auto; padding:10px;">
@@ -69,4 +88,3 @@
   {% endif %}
 
 {% endblock %}
-logout.html

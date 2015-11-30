@@ -4,6 +4,8 @@
 
     <div id="error-message">{{ error }}</div>
 
+  {% if not current_user.is_authenticated %}
+
     	<h2>Log In</h2>
 
     <form method="POST" action="/login.html">
@@ -23,5 +25,8 @@
       </table>
     </form>
 
+  {% else %}
+      You are already logged in. If you would like to switch accounts, please <a href="/logout.html">log out</a> first.
+  {% endif %}
 
 {% endblock %}
