@@ -407,11 +407,6 @@ def addExceptionForID(event_name, email, filename='exceptions.json'):
 			break
 	saveFile(exception_statements, 'exceptions.json')
 
-# TODO:
-# Write exception-checking method.
-# Implement exception-checking method into getBestConceptModelForID()
-# Implement exception-saving method into application frontend.
-
 def saveFile(content, filename):
 	"""Helper function for saving a file."""
 	f = open(filename, 'w')
