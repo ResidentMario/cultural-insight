@@ -138,7 +138,7 @@ def logout():
 def suggest():
 	"""SUGGESTIONS: This is where the user views and interacts with suggested events and exhibitions."""
 	form = forms.SuggestionForm(csrf_enabled=False)
-	event = backend.getBestConceptModelByID(flask_login.current_user.get_id())
+	event = backend.getBestConceptModelForID(flask_login.current_user.get_id())
 	if request.method == 'GET':
 		return render_template('suggestion.html', event=event)
 	# elif request.form['submit'] == "Show me more like this!":
@@ -153,12 +153,15 @@ def suggest():
 		if 'More' in request.form:
 			# TODO: Figure out what the **** is wrong with this method. Will likely take, um...ages...difficult but to squash...
 			backend.addConceptsToID(event.email, event.model)
+			backend.addExceptionForID(event.email, event.model['name'])
 			flash('Your preferences have been updated!')
 			return render_template('suggestion.html', event=event)
 		# User requests we show fewer events like this one.
 		# In this case we simply add the event to our list of exceptions for this user.
 		elif 'Less' in request.form:
-			return 'Failure!'
+			backend.addExceptionForID(event.model['name'], flask_login.current_user.get_id())
+			flash('Your preferences have been updated!')
+			return render_template('suggestion.html', event=event)
 
 @app.route('/dashboard.html', methods=['GET', 'POST'])
 def dashboard():

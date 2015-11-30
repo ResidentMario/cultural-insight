@@ -347,13 +347,15 @@ def remean(concept_list, mean=0.5):
 		concept_list[key] += round((mean - current_mean), 3)
 	return concept_list
 
-def getBestConceptModelByID(email):
+def getBestConceptModelForID(email):
 	"""
 	Given a user's email ID, returns the event in the events database that best matches their interests.
 	This method interacts with `exceptions.json` via `getExceptionsForID()`, below, to exclude events that the user has already declined.
+	TODO: Key in a way of returning no result whatsoever: e.g. if the user exhausts all of the events in the database.
 	"""
 	best_comparison = 0
 	best_event = dict()
+	exceptions = getExceptionsForID(email)
 	model = ConceptModel(email)
 	if 'events.json' in [f for f in os.listdir('.') if os.path.isfile(f)]:
 		list_of_events = json.load(open('events.json'))['events']
@@ -361,16 +363,53 @@ def getBestConceptModelByID(email):
 		c = ConceptModel()
 		c.model = event['model']['concepts']
 		overlap = compareConceptModels(c, model)
-		if overlap >= best_comparison:
+		if overlap >= best_comparison and event['name'] not in exceptions:
+		# if overlap >= best_comparison:
 			best_comparison = overlap
 			best_event = event
 	ret = ConceptModel('email')
 	ret.model = best_event
+	# At this point, if ret doesn't contain a valid event---just an empty dict---that means that we have exhausted our entire directory of
+	# events! To handle this case gracefully, we return a 'No more events' template instead.
+	if ret.model == dict():
+		ret.model == {
+			'name': "No more!",
+			'description': "You've looked at every event in our database! Come back later for more, but for now, we're all tapped out.",
+			'url': ''
+		}
+	# Otherwise we have a valid event, which we return.
 	return ret
+
+def getExceptionsForID(email, filename='exceptions.json'):
+	"""
+	Retrieves the list of events which a user has opted out of from `exceptions.json`.
+	"""
+	if filename in [f for f in os.listdir('.') if os.path.isfile(f)]:
+		exception_statements = json.load(open(filename))
+	else:
+		raise IOError("The exceptions file appears to be missing!")
+	for exception_statement in exception_statements:
+		if exception_statement['email'] == email:
+			return exception_statement['exceptions']
+	return []
+
+def addExceptionForID(event_name, email, filename='exceptions.json'):
+	"""
+	Adds an exception for an event for a user to `exceptions.json`.
+	"""
+	if filename in [f for f in os.listdir('.') if os.path.isfile(f)]:
+		exception_statements = json.load(open(filename))
+	else:
+		raise IOError("The exceptions file appears to be missing!")
+	for i in range(0, len(exception_statements)):
+		if exception_statements[i]['email'] == email:
+			exception_statements[i]['exceptions'].append(event_name)
+			break
+	saveFile(exception_statements, 'exceptions.json')
 
 # TODO:
 # Write exception-checking method.
-# Implement exception-checking method into getBestConceptModelByID()
+# Implement exception-checking method into getBestConceptModelForID()
 # Implement exception-saving method into application frontend.
 
 def saveFile(content, filename):

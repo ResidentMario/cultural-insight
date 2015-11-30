@@ -80,6 +80,21 @@ The `/templates` and `/static` folders contain the resources (HTML, CSS, SVG, et
 }
 ```
 
+**exceptions.json** - Stores the event exceptions associated with an account. Stored seperately from the rest of the user information (for no reason in particular). Of the form:
+
+```
+[
+    {
+       "email": "email",
+        "exceptions":
+            [
+                "Jackson Pollack @MoMA"
+                ...
+            ]
+    }
+]
+```
+
 **token.json** - Stores the token used for accessing IBM Watson services. Each token lives for only an hour. Of the form:
 
 ```
@@ -122,12 +137,12 @@ The `/templates` and `/static` folders contain the resources (HTML, CSS, SVG, et
 
 ##To do
 
-Create a utility for inputing further interests in the dashboard.
+Continue to populate an example list of events, using `curator.py`.
 
-Populate an example list of events, using `curator.py`.
+Squash the concept model blending bug and verify that the "event liked" exception is added.
 
-Create a page for viewing results.
+Try to optimize the concept modeling mathematics.
 
-Write in capacity for interacting with results into the viewer.
+Stetch goal: Write `cleanup.py`.
 
 Stretch goal: Write `emailer.py`.

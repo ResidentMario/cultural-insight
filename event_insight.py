@@ -98,8 +98,12 @@ def main():
 	print(a)'''
 
 	# Best event finder test.
-	e = backend.getBestConceptModelByID('test@baruchmail.cuny.edu')
-	print(str(e))
+	# e = backend.getBestConceptModelForID('test@baruchmail.cuny.edu')
+	# print(str(e))
+
+	# Exception getter test.
+	print(backend.getExceptionsForID('test@baruchmail.cuny.edu'))
+	print(backend.addExceptionForID('Test', 'test@baruchmail.cuny.edu'))
 
 if __name__ == "__main__":
     main()
