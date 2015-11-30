@@ -350,6 +350,7 @@ def remean(concept_list, mean=0.5):
 def getBestConceptModelByID(email):
 	"""
 	Given a user's email ID, returns the event in the events database that best matches their interests.
+	This method interacts with `exceptions.json` via `getExceptionsForID()`, below, to exclude events that the user has already declined.
 	"""
 	best_comparison = 0
 	best_event = dict()
@@ -366,6 +367,11 @@ def getBestConceptModelByID(email):
 	ret = ConceptModel('email')
 	ret.model = best_event
 	return ret
+
+# TODO:
+# Write exception-checking method.
+# Implement exception-checking method into getBestConceptModelByID()
+# Implement exception-saving method into application frontend.
 
 def saveFile(content, filename):
 	"""Helper function for saving a file."""

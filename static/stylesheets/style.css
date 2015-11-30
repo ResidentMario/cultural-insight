@@ -82,7 +82,7 @@
 #event-box {
 	border:1px solid #668cff;
 	background:#e5ecff;
-	padding:20px;
+	padding:10px 20px 10px 20px;
 	padding-top:0px;
 	border-radius:5px;
 }
@@ -93,7 +93,27 @@
 	background:#b3c5ff;
 	padding:5px;
 	border:1px solid #668cff;
-	box-shadow: 1px 1px #ccdaff;
+	box-shadow: 2px 2px #ccdaff;
+}
+#show_more {
+	width:100%;
+	font-size:16px;
+	font-weight:bold;
+	color:#00154d;
+	background:#b3c5ff;
+	padding:5px;
+	border:1px solid #668cff;
+	box-shadow: 2px 2px #ccdaff;
+}
+#show_less {
+	width:100%;
+	font-size:16px;
+	font-weight:bold;
+	color:#00154d;
+	background:#b3c5ff;
+	padding:5px;
+	border:1px solid #668cff;
+	box-shadow: 2px 2px #ccdaff;
 }
 input {
 	font-size:14px;
@@ -108,3 +128,6 @@ a {
 a:hover {
 	color:#264a60;
 }
+input:hover {
+    color: #264a60;
+} 

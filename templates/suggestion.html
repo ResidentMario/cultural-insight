@@ -14,25 +14,39 @@
     	<div id="event-box">
     	<h3>{{ event.model['name'] }}</h3>
 
-    	Description:
+    	<div style="width:99%; border:1px solid #668cff; margin:auto"></div>
+    	<br/>
+
     	{{ event.model['description'] }}
 
+
+    <form method="POST" action="/suggestion.html">
+          <!--<td><input id="submit-button" type="submit" value="Update"/></td>-->
+
+      <h3>Interests</h3>
+        <p>You can improve the results that we give you by feeding us more things that interest you here. The system continuously refines itself every time you express interest in an event; on the other hand, by inputting that information directly here, you are better able to direct the output that we will give you, if you so desire.</p>
+
+    <form method="POST" action="/suggestion.html">
 	<table style="width:100%; text-align:center; margin-top:20px;">
     	<tr>
-    	  <td style="width:45%">
+    	  <td style="width:33%">
         	<div id="event-button">
-         	 	<a href="{{ event.model['url']}}">Learn more!</a>
+         	 	<a href="{{ event.model['url']}}">Learn more.</a>
         	</div>
 	      </td>
-    	  <td style="width:45%">
-       		<div id="event-button">
-        	  <a href="">I'm not interested.</a>
-        	</div>
+    	  <td style="width:33%">
+	       	<input id="show_more" type="submit" name="More" value="Show me more like this!"/>
+        	</input>
+      	  </td>
+    	  <td style="width:33%">
+	       	<input id="show_less" type="submit" name="Less" value="Not interested.">
+    	   	</input>
       	  </td>
     	</tr>
   	</table>
+  	</form>
 
-    	</div>
+    </div>
 
   {% else %}
 

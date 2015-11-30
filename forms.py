@@ -28,3 +28,6 @@ class DashboardForm(Form):
     i3 = TextField('i3')
     i4 = TextField('i4')
     i5 = TextField('i5')
+
+class SuggestionForm(Form):
+    pass
