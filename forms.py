@@ -1,3 +1,7 @@
+"""
+forms.py
+Defines the form classes used by WTForms in the application front-end.
+"""
 from flask.ext.wtf import Form
 from wtforms.fields import TextField, PasswordField
 from wtforms.validators import Required, Email
