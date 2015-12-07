@@ -5,7 +5,6 @@ import flask.ext.login as flask_login
 from conceptmodel import ConceptModel
 from event import Event
 # Replace the above with whatever Class you yourself decide to implement.
-from backend import saveFile
 
 # class User(flask_login.UserMixin):
 # NOTE: If User stops working return to the generic above and hide the 
@@ -104,7 +103,9 @@ class User():
 				"accounts":
 					[user_schema]
 			}
-			saveFile(new_file_schema, filename)
+			f = open(filename, 'w')
+			f.write(json.dumps(new_file_schema, indent=4))
+			f.close()
 		else:
 			data = json.load(open(filename))
 			emails = [account['email'] for account in data['accounts']]
