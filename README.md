@@ -16,8 +16,12 @@ This example application is a relatively sophisticated demonstratory implementat
 
 **README.md** - This readme.
 
+**.gitignore** - The usual `.gitignore` file. In particular, `*.json` excludes all of the application's sensitive, locally-stored credentials.
+
 **app.py** - The Python web app, implemented in Python [Flask](http://flask.pocoo.org/). The routes are defined in the application using the @app.route() calls. The application deployed to Bluemix needs to listen to the port defined by the VCAP_APP_PORT environment variable as seen here:
-```python
+
+```
+python
 port = os.getenv('VCAP_APP_PORT', '5000')
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=int(port))
@@ -25,7 +29,9 @@ if __name__ == "__main__":
 
 This is the port given to your application so that http requests can be routed to it. If the property is not defined then it falls back to port 5000 allowing you to run this sample appliction locally.
 
-The `/templates` and `/static` folders contain the resources (HTML, CSS, SVG, etc.) used by the web application.
+**/templates** - The `/templates` and `/static` folders contain the resources (HTML, CSS, SVG, etc.) used by the web application.
+
+**/static** - See above.
 
 **forms.py** - Simple `Form` classfile file storing the `flask-wtf` forms used by the `app.py` front-end.
 
@@ -33,11 +39,21 @@ The `/templates` and `/static` folders contain the resources (HTML, CSS, SVG, et
 
 **backend.py** - This library contains a methods which are called by the various front-ends. In the process of being distributed out to other files.
 
-**curator.py** - This administrative script is used in the command line for defining the events that make up this application's event library. It is designed for use by a master "content curator". Note: needs rewriting.
+**curator.py** - This administrative script is used in the command line for defining the events that make up this application's event library. It is designed for use by a master "content curator". Written using the `click` library.
 
 **emailer.py** - This script executes the weekly emailings. It should be scheduled as a chron job. Not currently in active development (this is a stretch goal).
 
-**accounts.json** - Stores the account information. Interacts with the web-app. Of the form:
+**conceptmodel.py** - This classfile defines the `ConceptModel`, the object abstraction for concept insight calls used throughout the application.
+
+**user.py** - This classfile defines the `User`, the object abstraction for the application's current user that's used for tracking credentials and interacting with the User's concept model within `app.py`.
+
+**item.py** - Generic `Item` superclass file that is meant to make the code more portable for other applications. Implemented by `event.py`.
+
+**event.py** - This classfile defines the `Event`, the object abstraction for the events.
+
+**test.py** - Test file for the various classes. Used during development to make sure everything was operating smoothly; feel free to run this file yourself to help check integrity.
+
+**accounts.json** - Stores the account information. Interactions with this file are handled by the `User` abstraction. Of the form:
 
 ```
 {
@@ -67,38 +83,51 @@ The `/templates` and `/static` folders contain the resources (HTML, CSS, SVG, et
 {
     "events": [
         {
-            "name": "Name",
-            "description": "Long description...",
-		    "start-time": [
-    		    2015,
- 		       	11,
- 		       	26,
- 		       	0,
- 		       	0,
- 		       	54,
- 		       	3,
- 		       	330,
-		       	0
-		        ],
-		    "end-time": [
-    		    2015,
- 		       	11,
- 		       	26,
- 		       	0,
- 		       	0,
- 		       	54,
- 		       	3,
- 		       	330,
-		       	0
-		        ],
+            "location": "Museum of Modern Art",
+            "starttime": [
+                2015,
+                11,
+                26,
+                0,
+                0,
+                54,
+                3,
+                330,
+                0
+                ],
+            "endtime": [
+                2015,
+                11,
+                26,
+                0,
+                0,
+                54,
+                3,
+                330,
+                0
+                ],
+            "url": "http://www.moma.org/calendar/exhibitions/1553",
+            "name": "Jackson Pollack Exhibit",
             "model": {
                 "concepts": {
-                    "United States Department of the Interior": 0.663,
-                    "Bronze": 0.713,
-                    "Museum of Modern Art": 0.513,
-                    "..." : 0.000,
+                    "Engraving": 0.74957967,
+                    "Jackson Pollock": 0.84678906,
+                    "Drawing": 0.7697984,
+                    "Screen printing": 0.72784966,
+                    "Painting": 0.70308614,
+                    "1912": 0.33586192,
+                    "United States": 0.37856802,
+                    "Paper": 0.622553,
+                    "Masterpiece": 0.644868,
+                    "Paint": 0.58929,
+                    "Figurative art": 0.8233745,
+                    "Canvas": 0.75178367,
+                    "Evolution": 0.5099157,
+                    "Lithography": 0.7770813
                 }
-            }
+            },
+            "description": "Long description...",
+            "picture": ""
         }
     ]
 }
@@ -146,7 +175,7 @@ The `/templates` and `/static` folders contain the resources (HTML, CSS, SVG, et
 
 ##To do
 
-Finish OOP code rebase.
+Write beautiful documentation.
 
 Continue to populate an example list of events, using `curator.py`.
 

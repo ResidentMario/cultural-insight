@@ -11,32 +11,36 @@ from time import strptime
 
 # My own libraries.
 import backend
+from event import Event
 
 @click.command()
-@click.option('--event', prompt='What is the name of the event?', help='Number of greetings.')
+@click.option('--name', prompt='What is the name of the event?', help='Succint name for the event.')
 @click.option('--description', prompt='How is the event described?', help='Description of the event.')
+@click.option('--location', prompt='Where is the event being held?', help='Location where the event is being held.')
 @click.option('--url', prompt='Do you have a link with more information?', help='Link to more information on the event.')
 @click.option('--starttime', prompt='What time does it start? Format: e.g. 2016-06-13 22:00. All times military and EST.',
 		help='The start time for the event.')
 @click.option('--endtime', prompt='What time does it end? Format: e.g. 2016-06-13 22:00. All times military and EST.',
 		help='The end time for the event.')
-def script(event, description, starttime, endtime):
+@click.option('--picture', prompt='Do you have a link to a picture of the event?', help='Picture of the event, if possible.')
+def script(name, description, location, url, starttime, endtime, picture):
 	"""Runtime Click script."""
-	concepts = backend.fetchConceptsForEvent(description, backend.getToken())
+	event = Event(description=description, name=name)
+	event.location = location
+	event.url = url
+	event.starttime = starttime
 	if starttime != ' ':
-		_starttime = strptime(starttime, "%Y-%m-%d %H:%M")
+		event.starttime = strptime(starttime, "%Y-%m-%d %H:%M")
 	else:
-		_starttime = ''
+		event.starttime = ''
 	if endtime != ' ':
-		_endtime = strptime(endtime, "%Y-%m-%d %H:%M")
+		event.endtime = strptime(endtime, "%Y-%m-%d %H:%M")
 	else:
-		_endtime = ''
-	saveEvent(event, description, _url, _starttime, _endtime, concepts)
-	# for concept in concepts.keys():
-	#	click.echo('%s' % concept)
+		event.endtime = ''
+	event.saveEvent()
 	click.echo('Event added to the database!')
 
-def saveEvent(event, description, url, starttime, endtime, concepts, filename='events.json'):
+def saveEvent2(event, description, url, starttime, endtime, concepts, filename='events.json'):
 	"""Saves an event. Used by the `curator.script()` execution command."""
 	fp = json.load(open(filename))
 	fp['events'].append({
