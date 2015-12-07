@@ -12,12 +12,17 @@
     	<h2>We suggest:</h2>
 
     	<div id="event-box">
-    	<h3>{{ event.model['name'] }}</h3>
+    	<h3>{{ event.name }}</h3>
 
     	<div style="width:99%; border:1px solid #668cff; margin:auto"></div>
-    	<br/>
+      <div style="font-size:90%">
+        {% if event.location %} Location: {{ event.location }} {% endif %}
+        {% if event.starttime %} Starts: {{ event.starttime }} {% endif %}
+        {% if event.endtime %} End: {{ event.endtime }} {% endif %}
+      </div>
+      <br/>
 
-    	{{ event.model['description'] }}
+    	{{ event.description }}
 
     <form method="POST" action="/suggestion.html">
 	<table style="width:100%; text-align:center; margin-top:20px;">

@@ -107,6 +107,6 @@ def fetchRelatedConcepts(concept, token, level=0, limit=10):
 	# Percent encode the URI according to Wikipedia's encoding scheme.
 	concept = urllib.parse.quote(concept.replace(' ', '_'), safe='_,')
 	base_url = 'https://gateway.watsonplatform.net/concept-insights/api/v2/graphs/wikipedia/en-20120601/related_concepts?concepts=["/graphs/wikipedia/en-20120601/concepts/' + concept + '"]&level=' + str(level) + '&limit=' + str(limit)
-	print(base_url)
+	# printToLogFile('API call made: ' + base_url)
 	r = requests.get(base_url, headers=headers)
 	return json.loads(r.text)

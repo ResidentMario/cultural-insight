@@ -11,6 +11,7 @@ import requests
 
 # My own libraries.
 import event_insight_lib
+# from user import User
 
 #############
 # INTERFACE #
@@ -54,38 +55,6 @@ def authenticateUser(email, password, filename='accounts.json'):
 			return True
 	return False
 
-def deleteAccount():
-	"""
-	Deletes an account. May be requested by the user via the dashboard, or via an administrative script.
-	Or, you know, by hand.
-	TODO: admintools?
-	TODO: Implement.
-	"""
-	pass
-
-def changeEmail(current_email, new_email, filename='accounts.json'):
-	"""
-	Changes the email associated with an account. Must be requested by the user via the dashboard.
-	TODO: Implement. The method below does not quite work. Needs a while loop.
-	"""
-	#if filename in [f for f in os.listdir('.') if os.path.isfile(f)]:
-	#	list_of_users = json.load(open(filename))['accounts']
-	## Check to see if the selected email appears in the list.
-	#for existing_user in list_of_users:
-	#	if existing_user['email'] == current_email:
-	#		existing_user['email'] = new_email
-	#		with open(filename, 'w') as outfile:
-	#			json.dump(list_of_users, outfile)
-	#		break
-	pass			
-
-def changePassword(current_email, new_password, filename='accounts.json'):
-	"""
-	Changes the password associated with an account. Must be requested by the user via the dashboard.
-	TODO: Implement.
-	"""
-	pass
-
 def initializeSecretString():
 	"""
 	Imports the secret string used by some of the Flask plug-ins for security purposes.
@@ -109,35 +78,6 @@ def initializeSecretString():
 # These are associated with the .model property of an ObjectModel object, which stores the model and some metadata about the model:
 # its maturity and the email of the associated account.
 # ConceptModel objects are read from and written to `accounts.json` for permanent storage.
-
-class ConceptModel:
-	"""The ConceptModel object handles all of the concept model abstraction."""
-	maturity = 1
-	model = dict()
-	email = ''
-
-	def __init__(self, _model=dict(), email=''):
-		self.loadModel(email)
-		self.email = email
-
-	def loadModel(self, email, filename='accounts.json'):
-		"""Given the email of a registered user, loads a single user's model out of the accounts list."""
-		list_of_users = json.load(open(filename))['accounts']
-		for user in list_of_users:
-			if user['email'] == email:
-				self.model = user['model']['concepts']
-				break
-
-	def saveModel(self, filename='accounts.json'):
-		"""Given the concept model and email of a registered user, saves their model to the accounts list."""
-		data = json.load(open(filename))
-		for i in range(0, len(data['accounts'])):
-			if data['accounts'][i]['email'] == self.email:
-				data['accounts'][i]['model']['concepts'] = self.model
-				break
-		# Re-encode and save the modified file.
-		with open(filename, 'w') as outfile:
-			json.dump(data, outfile, indent=4)
 
 def getToken(tokenfile='token.json'):
 	"""
@@ -203,6 +143,7 @@ def addObjectToConceptModel(base_concept_model, merger_concept_model):
 	# Match up and average the concepts.
 	bK = sorted(base_concept_model.model.keys())
 	mK = sorted(merger_concept_model.model.keys())
+	# printToLogFile('Keys of the concept models that are being added to one another: ' + str(bK) + '\n' + str(mK))
 	for pair in itertools.zip_longest(bK, mK, fillvalue=None):
 		if pair[0] == pair[1]:
 			new_concept_model += { pair[0]: round((bK[int(pair[0])]*base_concept_model.maturity + mK[int(pair[0])]*merger_concept_model.maturity)/new_concept_model.maturity,3) }
@@ -294,16 +235,6 @@ def parseRawEventCall(raw_output, cutoff=0.5):
 				dat[concept['concept']['label']] = concept['score']
 	return dat
 
-def deleteConcept(concept, concept_dict):
-	"""
-	Deletes the entry for a concept in the given concept model dictionary, and returns the result.
-	If the entry is not present, the dictionary is just returned.
-	Used by the front-end dashboard for managing concepts associated with your account.
-	"""
-	if concept in concept_dict.keys():
-		del concept_dict[concept]
-	return concept_dict
-
 def getConceptsByID(user_email):
 	"""
 	Returns the (concept, confidence) tuples for the concepts associated with a certain email account.
@@ -321,8 +252,10 @@ def addConceptsToID(user_email, concept_list, filename='accounts.json'):
 	new_concept_model = ConceptModel()
 	token = getToken()
 	new_concept_model.model = conceptualize(concept_list, token)
+	printToLogFile('The contents of the model to be added in are: ' + str(new_concept_model.model) + '\n')
 	if new_concept_model.model != None and new_concept_model.model != dict():
 		user = ConceptModel(email=user_email)
+		printToLogFile('User model that is loaded so that it can be added to: ' + str(user.model) + '\n')
 		user = addObjectToConceptModel(user, new_concept_model)
 		user.model = remean(user.model, mean=0.5)
 		user.saveModel()
@@ -411,6 +344,12 @@ def saveFile(content, filename):
 	"""Helper function for saving a file."""
 	f = open(filename, 'w')
 	f.write(json.dumps(content, indent=4))
+	f.close()
+
+def printToLogFile(text, filename='log.txt'):
+	"""Helper function for printing to a logfile. Useful ad-hoc for debugging the web-app."""
+	f = open(filename, 'a')
+	f.write(text + '\n')
 	f.close()
 
 ###################

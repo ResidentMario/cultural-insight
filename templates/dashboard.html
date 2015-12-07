@@ -59,10 +59,10 @@
   <p>As of now, the following concepts are associated with your account:</p><br/>
 
   {% for concept in concepts %}
-    <span class="concept-box" style="border:1px solid #668cff; background:#e5ecff; box-shadow: 1px 1px 1px #668cff; width:auto; padding:10px;">
-      <span style="font-weight:bold">{{ concept }}</span>&mdash;{{ concepts[concept] }} <!--<span style="font-size:10px; padding-left:10px; color:#001b66; font-weight:bold">(x)</span>-->
-    </span>
-    <br/><br/>
+      <span class="concept-box" style="border:1px solid #668cff; background:#e5ecff; box-shadow: 1px 1px 1px #668cff; padding:10px; font-size:80%;">
+        <span style="font-weight:bold">{{ concept }}</span>&mdash;{{ concepts[concept]|round(3, method='common') }}
+      </span>
+      <br/><br/>
   {% endfor %}
 
   <table style="width:100%; text-align:center">

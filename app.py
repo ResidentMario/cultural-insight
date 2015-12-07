@@ -5,6 +5,7 @@ This Flask file implements this application's webservice.
 
 # Redistributables.
 import os
+import json
 from flask import Flask
 from flask import render_template
 from flask import request
@@ -35,17 +36,16 @@ app.secret_key = str(backend.initializeSecretString())
 # ##############
 # This subsection controls how users log in and out of the webservice.
 # It uses the Flask-Login package.
-# TODO: Move to backend.py?
+# See also `user.py`, which contains the methods associated with the application's individual users;
+# and `conceptmodel.py`, which contains the methods associated with each user's individual conceptualization.
 
 import flask.ext.login as flask_login
+from user import User
+from conceptmodel import ConceptModel
 
 # Initialize the login manager.
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
-
-class User(flask_login.UserMixin):
-	"""The default User class implemented by Flask-Login is fine for our purposes."""
-	pass
 
 @login_manager.user_loader
 def user_loader(email):
@@ -53,7 +53,7 @@ def user_loader(email):
 	if not backend.emailAlreadyInUse(email):
 		return
 	else:
-		user = User()
+		user = User().loadUser(email)
 		user.id = email
 		return user
 
@@ -99,11 +99,11 @@ def start():
 				return render_template('start.html', form=form, error='Error: Please input a Baruch email, only, please! Other email addresses are not supported yet.')
 				# TODO: To support other email addresses we can use the flask-wtf validate email subroutine.
 			else:
-				# Now we have the data, contained in request.form['password'], email, i1, ..., i5. We have to process it somehow.
-				backend.addNewUser(request.form['email'], request.form['password'], [request.form['i1'], request.form['i2'], request.form['i3'], request.form['i4'], request.form['i5']], backend.getToken())
-				user = User()
-				email = request.form['email']
-				user.id = email
+				user = User(email=request.form['email'], password=request.form['password'])
+				concepts = [concept for concept in [request.form['i1'], request.form['i2'], request.form['i3'], request.form['i4'], request.form['i5']] if concept != '']
+				for concept in concepts:
+					user.addUserInputToConceptModel(concept)
+				user.saveUser()
 				flask_login.login_user(user)
 				flash('Your account was successfully registered.')
 				return render_template('registered.html')
@@ -118,9 +118,7 @@ def login():
 		return render_template('login.html', form=form)
 	else:
 		if backend.authenticateUser(request.form['email'], request.form['password']):
-			user = User()
-			email = request.form['email']
-			user.id = email
+			user = User().loadUser(request.form['email'])
 			flask_login.login_user(user)
 			flash('You were successfully logged in.')
 			return redirect('/')
@@ -138,28 +136,23 @@ def logout():
 def suggest():
 	"""SUGGESTIONS: This is where the user views and interacts with suggested events and exhibitions."""
 	form = forms.SuggestionForm(csrf_enabled=False)
-	event = backend.getBestConceptModelForID(flask_login.current_user.get_id())
+	# event = backend.getBestConceptModelForID(flask_login.current_user.get_id())
+	event = flask_login.current_user.getBestEvent()
+	# return event.name
 	if request.method == 'GET':
 		return render_template('suggestion.html', event=event)
-	# elif request.form['submit'] == "Show me more like this!":
-		# return 'Yes!'
-	#	pass
-	# elif request.form['submit'] == "Not interested.":
-		# return 'No!'
-	#	pass
 	elif request.method == 'POST' and form.validate_on_submit():
 		# User requests we show more events like this one.
 		# In this case we merge that event's concept model into the user's model and we add the given event to our list of exceptions.
 		if 'More' in request.form:
-			# TODO: Figure out what the **** is wrong with this method. Will likely take, um...ages...difficult but to squash...
-			backend.addConceptsToID(event.email, event.model)
-			backend.addExceptionForID(event.email, event.model['name'])
+			flask_login.current_user.getConceptModel().iterateModel(event.model)
+			flask_login.current_user.exceptions.append(event.name)
+			flask_login.current_user.saveUser()
 			flash('Your preferences have been updated!')
 			return render_template('suggestion.html', event=event)
 		# User requests we show fewer events like this one.
 		# In this case we simply add the event to our list of exceptions for this user.
 		elif 'Less' in request.form:
-			backend.addExceptionForID(event.model['name'], flask_login.current_user.get_id())
 			flash('Your preferences have been updated!')
 			return render_template('suggestion.html', event=event)
 
@@ -168,25 +161,31 @@ def dashboard():
 	"""DASHBOARD: This is where all of the user account controls live."""
 	form = forms.DashboardForm(csrf_enabled=False)
 	if request.method == 'GET':
-		return render_template('dashboard.html', form=form, concepts=backend.getConceptsByID(flask_login.current_user.get_id()))
+		# return str(list(flask_login.current_user.getConceptModel().model)) + flask_login.current_user.email + flask_login.current_user.get_id() + str(flask_login.current_user.model.maturity)
+		return render_template('dashboard.html', form=form, concepts=flask_login.current_user.getConceptModel().model)
 	if request.method == 'POST':
-		if request.form['email']:
-			backend.changeEmail(flask_login.current_user.get_id(), request.form['email'])
-		if request.form['password']:
-			backend.changePassword(flask_login.current_user.get_id(), request.form['password'])
+		if request.form['email'] or request.form['password']:
+			if request.form['email']:
+				flask_login.current_user.updateUser(email=request.form['email'])
+			if request.form['password']:
+				flask_login.current_user.updateUser(password=request.form['password'])
+			flask_login.logout_user()
+			flash('Your changes have been applied. Please log back in again now.')
+			return redirect('/')
 		if request.form['i1']:
 			# This method is flagged to return False when the operation fails.
 			# This occurs when the raw input the user provides is not good enough to resolve to a particular concept.
 			# In that case, return an error message indicating this fact.
-			flag = backend.addConceptsToID(flask_login.current_user.get_id(), [request.form['i1']])
+			flag = flask_login.current_user.addUserInputToConceptModel(request.form['i1'])
 			if flag == False:
-				return render_template('dashboard.html', error='Error: The input you provided could not be resolved.', form=form)
-		# if request.form['i2']:
-		#	backend.addConceptsToID(flask_login.current_user.get_id(), [request.form['i2']])
-		# if request.form['i3']:
-		#	backend.addConceptsToID(flask_login.current_user.get_id(), [request.form['i3']])			
-		flash('Your changes have been applied.')
-		return render_template('dashboard.html', form=form)
+				return render_template('dashboard.html',
+					error='Error: The input you provided could not be resolved.',
+					form=form,
+					concepts=flask_login.current_user.getConceptModel().mode)
+			else:
+				flask_login.current_user.saveUser()
+				flash('Your changes have been applied.')
+				return render_template('dashboard.html', form=form, concepts=flask_login.current_user.getConceptModel().model)
 
 #############
 # END PATHS #

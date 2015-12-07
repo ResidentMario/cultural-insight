@@ -4,6 +4,7 @@
 import event_insight_lib
 import backend
 import urllib
+import json
 
 def main():
 	# Tokenization and API access test.
@@ -102,8 +103,16 @@ def main():
 	# print(str(e))
 
 	# Exception getter test.
-	print(backend.getExceptionsForID('test@baruchmail.cuny.edu'))
-	print(backend.addExceptionForID('Test', 'test@baruchmail.cuny.edu'))
+	# print(backend.getExceptionsForID('test@baruchmail.cuny.edu'))
+	# print(backend.addExceptionForID('Test', 'test@baruchmail.cuny.edu'))
+
+	# Exception web-app test.
+	a = json.loads('events.json')
+	print(backend.getBestConceptModelForID('test@baruchmail.cuny.edu'))
+	# event = backend.getBestConceptModelForID('test@baruchmail.cuny.edu')
+	# backend.addConceptsToID(event.email, event.model)
+	# backend.addExceptionForID(event.email, event.model['name'])
+
 
 if __name__ == "__main__":
     main()
