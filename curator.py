@@ -40,18 +40,5 @@ def script(name, description, location, url, starttime, endtime, picture):
 	event.saveEvent()
 	click.echo('Event added to the database!')
 
-def saveEvent2(event, description, url, starttime, endtime, concepts, filename='events.json'):
-	"""Saves an event. Used by the `curator.script()` execution command."""
-	fp = json.load(open(filename))
-	fp['events'].append({
-		'name': event,
-		'description': description,
-		'url': url,
-		'starttime': starttime,
-		'endtime': endtime,
-		'model': {'concepts': concepts}
-	})
-	backend.saveFile(fp, filename)
-
 if __name__ == '__main__':
     script()
