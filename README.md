@@ -1,7 +1,11 @@
 ##About
 The Cultural Insight tool is a web-based Bluemix-hosted cultural engagement tool. Users of the web portal are able to find events happening in New York City which, based on a model of that user's interests, they would be interested in attending. The recommendation engine is implemented in Python using the Concept Insight IBM Watson tool; the webservice is implemented in Python Flask. The idea behind this application is that it will funnel the vast amount of information thrown at those that live in the city down to a core of causes that they care about, increasing their engagement by surfacing events that they are actually interested in attending.
 
-A stretch goal is to implement this service via a weekly email send to users, so that they do not have to log into this application to use it.
+This example application is a relatively sophisticated demonstratory implementation of a Watson-based recommendation engine, implemented as an example of the kinds of applications that are possible using the service. It can be split into two parts:
+
+* A core collection of methods and classes which together compose a recommendation engine based on the IBM Watson "Concept Insights" API service.
+
+* An example webservice using this technology, presented online on [Bluemix](http://cultural-insight.mybluemix.net/).
 
 ##Structure of the application
 **Procfile** - This command is run whenever the application is restarted on Bluemix. In our case it runs `app.py`, which defines this system's webservice.
@@ -12,7 +16,7 @@ A stretch goal is to implement this service via a weekly email send to users, so
 
 **README.md** - This readme.
 
-**app.py** - The python web app, implemented in Python [Flask](http://flask.pocoo.org/). The routes are defined in the application using the @app.route() calls. The application deployed to Bluemix needs to listen to the port defined by the VCAP_APP_PORT environment variable as seen here:
+**app.py** - The Python web app, implemented in Python [Flask](http://flask.pocoo.org/). The routes are defined in the application using the @app.route() calls. The application deployed to Bluemix needs to listen to the port defined by the VCAP_APP_PORT environment variable as seen here:
 ```python
 port = os.getenv('VCAP_APP_PORT', '5000')
 if __name__ == "__main__":
@@ -23,19 +27,39 @@ This is the port given to your application so that http requests can be routed t
 
 The `/templates` and `/static` folders contain the resources (HTML, CSS, SVG, etc.) used by the web application.
 
-**forms.py** - Simple Flask file storing handling for the forms used by the `app.py` front-end.
+**forms.py** - Simple `Form` classfile file storing the `flask-wtf` forms used by the `app.py` front-end.
 
-**event_insight_lib.py** - The IBM Watson API bindings that I have written for the purposes of this tool.
+**event_insight_lib.py** - The IBM Watson API bindings that I have written for the purposes of this tool. This will hopefully one day be deprecated in favor of the [Watson Developer Cloud Python SDK](https://github.com/watson-developer-cloud/python-sdk).
 
-**event_insight.py** - Test module for `event_insight_lib.py` and for `backend.py`.
+**backend.py** - This library contains a methods which are called by the various front-ends. In the process of being distributed out to other files.
 
-**backend.py** - The core of the application, this library contains all of the methods which are called by the various front-ends: the web application (`app.py`), the curation tool (`curator.py`), and the email script (`emailer.py`).
-
-**curator.py** - This administrative script is used in the command line for defining the events that make up this application's event library. It is designed for use by a master "content curator".
+**curator.py** - This administrative script is used in the command line for defining the events that make up this application's event library. It is designed for use by a master "content curator". Note: needs rewriting.
 
 **emailer.py** - This script executes the weekly emailings. It should be scheduled as a chron job. Not currently in active development (this is a stretch goal).
 
-**accounts.json** - Stores the account information. Interacts with the web-app.
+**accounts.json** - Stores the account information. Interacts with the web-app. Of the form:
+
+```
+{
+    "accounts": [
+        {
+            "email": "Email"
+            "password": "Password",
+            "model": {
+                "maturity": 1,
+                "concepts": {
+                    "Test": 0.5
+                },
+            "exceptions": [
+                "Jackson Pollack Exhibit",
+                "etc."
+            ]
+            }
+        }
+    ]
+}
+```
+
 
 **events.json** - Stores the events information. Interacts with the emailer and curation scripts. Of the form:
 
@@ -78,22 +102,6 @@ The `/templates` and `/static` folders contain the resources (HTML, CSS, SVG, et
         }
     ]
 }
-```
-
-**exceptions.json** - Stores the event exceptions associated with an account. Stored seperately from the rest of the user information (for no reason in particular). Of the form:
-
-```
-[
-    {
-       "email": "email",
-        "exceptions":
-            [
-                "Jackson Pollack @MoMA"
-                ...
-            ]
-    }
-]
-```
 
 **token.json** - Stores the token used for accessing IBM Watson services. Each token lives for only an hour. Of the form:
 
@@ -137,11 +145,9 @@ The `/templates` and `/static` folders contain the resources (HTML, CSS, SVG, et
 
 ##To do
 
+Finish OOP code rebase.
+
 Continue to populate an example list of events, using `curator.py`.
-
-Squash the concept model blending bug and verify that the "event liked" exception is added.
-
-Try to optimize the concept modeling mathematics.
 
 Stetch goal: Write `cleanup.py`.
 

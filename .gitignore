@@ -10,3 +10,4 @@ lib/
 bin/
 *.egg
 *.json
+log.txt

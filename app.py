@@ -136,7 +136,6 @@ def logout():
 def suggest():
 	"""SUGGESTIONS: This is where the user views and interacts with suggested events and exhibitions."""
 	form = forms.SuggestionForm(csrf_enabled=False)
-	# event = backend.getBestConceptModelForID(flask_login.current_user.get_id())
 	event = flask_login.current_user.getBestEvent()
 	# return event.name
 	if request.method == 'GET':
@@ -153,6 +152,8 @@ def suggest():
 		# User requests we show fewer events like this one.
 		# In this case we simply add the event to our list of exceptions for this user.
 		elif 'Less' in request.form:
+			flask_login.current_user.exceptions.append(event.name)
+			flask_login.current_user.saveUser()
 			flash('Your preferences have been updated!')
 			return render_template('suggestion.html', event=event)
 
