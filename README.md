@@ -102,6 +102,7 @@ The `/templates` and `/static` folders contain the resources (HTML, CSS, SVG, et
         }
     ]
 }
+```
 
 **token.json** - Stores the token used for accessing IBM Watson services. Each token lives for only an hour. Of the form:
 
