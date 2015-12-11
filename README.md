@@ -9,17 +9,17 @@ This example application is a relatively sophisticated demonstratory implementat
 
 
 ##Using the tool
-![Screenshot of the Start Screen](https://github.com/ResidentMario/cultural-insight/tree/master/static/images/start-screen.png)
+![Screenshot of the Start Screen](https://raw.githubusercontent.com/ResidentMario/cultural-insight/master/static/images/start-screen.png)
 
 To begin using the Cultural Insight tool head over to the [registration page](http://cultural-insight.mybluemix.net/start.html) and get started with creating your account. You will be asked to provide your email, which will be used as your "ID" throughout the application; your password; and a few of the broad cultural topics that interest you most.
 
 Once you have registered for an account you will be able to log in and begin using the service.
 
-![Screenshot of the Dashboard Screen](https://github.com/ResidentMario/cultural-insight/tree/master/static/images/dashboard-screen.png)
+![Screenshot of the Dashboard Screen](https://github.com/ResidentMario/cultural-insight/blob/master/static/images/dashboard-screen.png?raw=true)
 
 The "Account Dashboard" page allows you to modify your account settings. It also allows you to feed the service still further interests, allowing you to manually configure the output that the system returns to you. If there is some category of events that you are interested that the service is not yet able to find, you can input them here and enjoy your expanded search results.
 
-![Screenshot of the Suggestions Screen](https://github.com/ResidentMario/cultural-insight/tree/master/static/images/suggestion-screen.png)
+![Screenshot of the Suggestions Screen](https://github.com/ResidentMario/cultural-insight/blob/master/static/images/suggestion-screen.png?raw=true)
 
 The core of the application is the "Suggestions" pane. Here you can see the recommendations on events and going-ons that the system has prepared for your viewing. "Learn More" provides a link to the full event description, while "Show me more like this!" and "Not interested." moves the user on to the next event, incrementing the system's understanding of its user in the meantime.
 
