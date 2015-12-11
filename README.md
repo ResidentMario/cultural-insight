@@ -5,7 +5,7 @@ This example application is a relatively sophisticated demonstratory implementat
 
 * A core collection of methods and classes which together compose a recommendation engine based on the IBM Watson "Concept Insights" API service.
 
-* An example webservice using this technology: the [Cultural Insight Application](http://cultural-insight.mybluemix.net/)  (hosted on [Bluemix](https://console.ng.bluemix.net/).
+* An example webservice using this technology: the [Cultural Insight Application](http://cultural-insight.mybluemix.net/)  (hosted on [Bluemix](https://console.ng.bluemix.net/)).
 
 
 ##Using the tool
@@ -18,6 +18,11 @@ Once you have registered for an account you will be able to log in and begin usi
 ![Screenshot of the Dashboard Screen](https://github.com/ResidentMario/cultural-insight/blob/master/static/images/dashboard-screen.png?raw=true)
 
 The "Account Dashboard" page allows you to modify your account settings. It also allows you to feed the service still further interests, allowing you to manually configure the output that the system returns to you. If there is some category of events that you are interested that the service is not yet able to find, you can input them here and enjoy your expanded search results.
+
+
+![Focus on the Concepts from the Dashboard Screen](https://github.com/ResidentMario/cultural-insight/blob/master/static/images/concepts-screen-grab.png?raw=true)
+
+The list of concepts that have been associated with your account is featured prominently on the dashboard, allowing you to get a sense of what the system thinks you're interested in.
 
 ![Screenshot of the Suggestions Screen](https://github.com/ResidentMario/cultural-insight/blob/master/static/images/suggestion-screen.png?raw=true)
 
