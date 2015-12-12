@@ -31,7 +31,7 @@ The core of the application is the "Suggestions" pane. Here you can see the reco
 ##Using this code
 This repository is an example of any number of recommendation engines which could be built around the Congitive Insights service. If you also intend to build a webservice using [Flask](http://flask.pocoo.org/), as was used for this application, then it might be productive to fork this entire repository; however, for most development cases it is simpler to fork the [watson-recommend](https://github.com/ResidentMario/watson-recommend) [submodule](https://git-scm.com/docs/git-submodule), also hosted on GitHub, which forms the core of this service.
 
-Once you have forked and pulled the code onto your local development machine, you will need to create a `token.py` file containing your [IBM Bluemix](https://console.ng.bluemix.net/) access credentials. If you do not have an account already you may [register](https://console.ng.bluemix.net/registration/) for a free trial account. Once you are logged in, enter the catalog, scroll down to the "IBM Watson" section, and click through to create an instance of the "Concept Insights" service. Go back to the dashboard, click on the newly populated service, and click through to "Service Credentials" on the sidebar to get your service credentials: copy-paste this file and save it locally as the aforementioned `token.py`. Your credentials should look something like this:
+Once you have forked and pulled the code onto your local development machine, you will need to create a `token.json` file containing your [IBM Bluemix](https://console.ng.bluemix.net/) access credentials. If you do not have an account already you may [register](https://console.ng.bluemix.net/registration/) for a free trial account. Once you are logged in, enter the catalog, scroll down to the "IBM Watson" section, and click through to create an instance of the "Concept Insights" service. Go back to the dashboard, click on the newly populated service, and click through to "Service Credentials" on the sidebar to get your service credentials: copy-paste this file and save it locally as the aforementioned `token.json`. Your credentials should look something like this:
 
 ```
 {
@@ -42,6 +42,8 @@ Once you have forked and pulled the code onto your local development machine, yo
   }
 }
 ```
+
+If you are a developer you may also be interested in reading the [API documentation](https://watson-api-explorer.mybluemix.net/swagger.html?url=/listings/concept-insights-v2.json#!/graphs/graphLabelSearch).
 
 ##Structure of the application
 **Procfile** - This command is run whenever the application is restarted on Bluemix. In our case it runs `app.py`, which defines this system's webservice.
@@ -218,5 +220,7 @@ This is the port given to your application so that http requests can be routed t
 * Incorporate the new ([Phab ticket](https://phabricator.wikimedia.org/T44259); [example query](https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/all-agents/Selfie/daily/2015010100/2015120100)) into this program's core [watson-recommend](https://github.com/ResidentMario/watson-recommend) library. Use this to tighten the program's mathematics.
 
 * Move from JSON to database storage.
+
+* Rebase the access methods to the [Watson Developer Cloud Python SDK](https://github.com/watson-developer-cloud/python-sdk), once the "Concept Insights" segment is fully developed out.
 
 * Write `emailer.py`.
