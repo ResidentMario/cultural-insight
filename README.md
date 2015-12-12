@@ -1,9 +1,9 @@
 ##About
 The Cultural Insight tool is a web-based Bluemix-hosted cultural engagement tool. Users of the web portal are able to find events happening in New York City which, based on a model of that user's interests, they would be interested in attending. The recommendation engine is implemented in Python using the Concept Insight IBM Watson tool; the webservice is implemented in Python Flask. The idea behind this application is that it will funnel the vast amount of information thrown at those that live in the city down to a core of causes that they care about, increasing their engagement by surfacing events that they are actually interested in attending.
 
-This example application is a relatively sophisticated demonstratory implementation of a Watson-based recommendation engine, implemented as an example of the kinds of applications that are possible using the service. It can be split into two parts:
+This example application is a demonstratory implementation of a Watson-based recommendation engine, implemented as an example of the kinds of applications that are possible using the service. It can be split into two parts:
 
-* A core collection of methods and classes which together compose a recommendation engine based on the IBM Watson "Concept Insights" API service.
+* A core collection of methods and classes which together compose a recommendation engine based on the IBM Watson "Concept Insights" API service. This [watson-recommend](https://github.com/ResidentMario/watson-recommend) library is available seperately as a submodule also hosted on GitHub, and is of primary developer interest.
 
 * An example webservice using this technology: the [Cultural Insight Application](http://cultural-insight.mybluemix.net/)  (hosted on [Bluemix](https://console.ng.bluemix.net/)).
 
@@ -27,6 +27,21 @@ The list of concepts that have been associated with your account is featured pro
 ![Screenshot of the Suggestions Screen](https://github.com/ResidentMario/cultural-insight/blob/master/static/images/suggestion-screen.png?raw=true)
 
 The core of the application is the "Suggestions" pane. Here you can see the recommendations on events and going-ons that the system has prepared for your viewing. "Learn More" provides a link to the full event description, while "Show me more like this!" and "Not interested." moves the user on to the next event, incrementing the system's understanding of its user in the meantime.
+
+##Using this code
+This repository is an example of any number of recommendation engines which could be built around the Congitive Insights service. If you also intend to build a webservice using [Flask](http://flask.pocoo.org/), as was used for this application, then it might be productive to fork this entire repository; however, for most development cases it is simpler to fork the [watson-recommend](https://github.com/ResidentMario/watson-recommend) [submodule](https://git-scm.com/docs/git-submodule), also hosted on GitHub, which forms the core of this service.
+
+Once you have forked and pulled the code onto your local development machine, you will need to create a `token.py` file containing your [IBM Bluemix](https://console.ng.bluemix.net/) access credentials. If you do not have an account already you may [register](https://console.ng.bluemix.net/registration/) for a free trial account. Once you are logged in, enter the catalog, scroll down to the "IBM Watson" section, and click through to create an instance of the "Concept Insights" service. Go back to the dashboard, click on the newly populated service, and click through to "Service Credentials" on the sidebar to get your service credentials: copy-paste this file and save it locally as the aforementioned `token.py`. Your credentials should look something like this:
+
+```
+{
+  "credentials": {
+    "url": "https://gateway.watsonplatform.net/concept-insights/api",
+    "username": "........-....-....-....-............",
+    "password": "............"
+  }
+}
+```
 
 ##Structure of the application
 **Procfile** - This command is run whenever the application is restarted on Bluemix. In our case it runs `app.py`, which defines this system's webservice.
@@ -196,10 +211,12 @@ This is the port given to your application so that http requests can be routed t
 
 ##To do
 
-Write beautiful documentation.
+* Write beautiful documentation.
 
-Continue to populate an example list of events, using `curator.py`.
+* Continue to populate an example list of events, using `curator.py`.
 
-Stetch goal: Write `cleanup.py`.
+* Incorporate the new ([Phab ticket](https://phabricator.wikimedia.org/T44259); [example query](https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/all-agents/Selfie/daily/2015010100/2015120100)) into this program's core [watson-recommend](https://github.com/ResidentMario/watson-recommend) library. Use this to tighten the program's mathematics.
 
-Stretch goal: Write `emailer.py`.
+* Move from JSON to database storage.
+
+* Write `emailer.py`.
